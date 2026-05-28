@@ -42,16 +42,16 @@ const StarField: React.FC = () => {
   }, []);
 
   const spawnParticle = useCallback((width: number, height: number) => {
-    if (particlesRef.current.length < 60) {
+    if (particlesRef.current.length < 20) {
       particlesRef.current.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        opacity: Math.random() * 0.3 + 0.05,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: -Math.random() * 0.5,
+        opacity: Math.random() * 0.5 + 0.2,
         size: Math.random() * 2 + 0.5,
         life: 0,
-        maxLife: Math.random() * 300 + 200,
+        maxLife: 120 + Math.random() * 60,
       });
     }
   }, []);
@@ -67,7 +67,6 @@ const StarField: React.FC = () => {
       canvas.height = window.innerHeight;
       initStars(canvas.width, canvas.height);
     };
-
     resize();
     window.addEventListener('resize', resize);
 
@@ -75,7 +74,6 @@ const StarField: React.FC = () => {
       if (!canvas || !ctx) return;
       timeRef.current += 1;
 
-      // Clear
       ctx.fillStyle = '#050816';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -111,24 +109,15 @@ const StarField: React.FC = () => {
       starsRef.current.forEach(star => {
         const twinkle = Math.sin(timeRef.current * star.twinkleSpeed + star.twinkleOffset);
         const opacity = star.opacity * (0.6 + twinkle * 0.4);
-        
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        
-        // Color variety
         const colorVal = Math.floor(star.x * star.y) % 4;
-        if (colorVal === 0) {
-          ctx.fillStyle = `rgba(247, 215, 116, ${opacity})`;
-        } else if (colorVal === 1) {
-          ctx.fillStyle = `rgba(255, 122, 182, ${opacity * 0.7})`;
-        } else if (colorVal === 2) {
-          ctx.fillStyle = `rgba(155, 123, 255, ${opacity * 0.8})`;
-        } else {
-          ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-        }
+        if (colorVal === 0) ctx.fillStyle = `rgba(247, 215, 116, ${opacity})`;
+        else if (colorVal === 1) ctx.fillStyle = `rgba(255, 122, 182, ${opacity * 0.7})`;
+        else if (colorVal === 2) ctx.fillStyle = `rgba(155, 123, 255, ${opacity * 0.8})`;
+        else ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
         ctx.fill();
 
-        // Glow for bright stars
         if (star.size > 1.5 && opacity > 0.6) {
           const glow = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.size * 4);
           glow.addColorStop(0, `rgba(255, 255, 255, ${opacity * 0.3})`);
@@ -140,25 +129,21 @@ const StarField: React.FC = () => {
         }
       });
 
-      // Spawn particles occasionally
       if (timeRef.current % 20 === 0) {
         spawnParticle(canvas.width, canvas.height);
       }
 
-      // Draw particles
       particlesRef.current = particlesRef.current.filter(p => p.life < p.maxLife);
       particlesRef.current.forEach(p => {
         p.life += 1;
         p.x += p.vx;
         p.y += p.vy;
-        
         const lifeRatio = p.life / p.maxLife;
         const fadeOpacity = lifeRatio < 0.2
           ? p.opacity * (lifeRatio / 0.2)
           : lifeRatio > 0.8
-            ? p.opacity * (1 - (lifeRatio - 0.8) / 0.2)
-            : p.opacity;
-
+          ? p.opacity * (1 - (lifeRatio - 0.8) / 0.2)
+          : p.opacity;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(155, 123, 255, ${fadeOpacity})`;
@@ -167,7 +152,6 @@ const StarField: React.FC = () => {
 
       animRef.current = requestAnimationFrame(draw);
     };
-
     draw();
 
     return () => {
@@ -179,8 +163,8 @@ const StarField: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0"
-      style={{ width: '100vw', height: '100vh' }}
+      className="fixed inset-0 pointer-events-none"
+      style={{ zIndex: 0 }}
     />
   );
 };
