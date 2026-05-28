@@ -37,30 +37,18 @@ const PlanetVoid: React.FC = () => {
     }
   }, [candleLit]);
 
-  const handleCandleClick = () => {
-    if (!candleLit) {
-      setCandleLit(true);
-    }
-  };
-
-  const handleCarryFlame = () => {
-    setCandle(true);
-  };
-
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
       style={{ background: 'radial-gradient(ellipse at center, #0a0510 0%, #020105 100%)' }}
     >
-      {/* Subtle void overlay */}
+      {/* Void overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at 50% 50%, rgba(45,27,105,0.2) 0%, transparent 70%)',
-        }}
+        style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(45,27,105,0.2) 0%, transparent 70%)' }}
       />
 
-      {/* Stars - very sparse in the void */}
+      {/* Sparse stars */}
       {Array.from({ length: 20 }).map((_, i) => (
         <motion.div
           key={i}
@@ -90,9 +78,7 @@ const PlanetVoid: React.FC = () => {
         >
           ⚫ VOID
         </h1>
-        <p className="font-cormorant text-gray-400 mt-2 italic">
-          The silence between heartbeats
-        </p>
+        <p className="font-cormorant text-gray-400 mt-2 italic">The silence between heartbeats</p>
       </motion.div>
 
       {/* Text sequence */}
@@ -124,7 +110,7 @@ const PlanetVoid: React.FC = () => {
       <div className="flex flex-col items-center gap-8">
         <motion.div
           className="relative flex flex-col items-center cursor-pointer"
-          onClick={handleCandleClick}
+          onClick={() => !candleLit && setCandleLit(true)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -137,24 +123,20 @@ const PlanetVoid: React.FC = () => {
                 className="relative mb-1 flex items-end justify-center"
                 style={{ height: '60px' }}
               >
-                {/* Outer glow */}
                 <motion.div
                   className="absolute rounded-full"
                   style={{
-                    width: 50,
-                    height: 50,
+                    width: 50, height: 50,
                     background: 'radial-gradient(circle, rgba(247,215,116,0.2) 0%, transparent 70%)',
                     bottom: 0,
                   }}
                   animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
                   transition={{ duration: 1, repeat: Infinity }}
                 />
-                {/* Flame body */}
                 <motion.div
                   style={{
-                    width: 20,
-                    height: 45,
-                    background: `radial-gradient(ellipse at 50% 70%, #fff7e0 20%, #f7d774 50%, #ff7ab6 80%, transparent 100%)`,
+                    width: 20, height: 45,
+                    background: 'radial-gradient(ellipse at 50% 70%, #fff7e0 20%, #f7d774 50%, #ff7ab6 80%, transparent 100%)',
                     borderRadius: '50% 50% 30% 30% / 60% 60% 40% 40%',
                     filter: 'blur(0.5px)',
                     boxShadow: '0 0 20px rgba(247,215,116,0.8), 0 0 40px rgba(255,122,182,0.4)',
@@ -173,8 +155,7 @@ const PlanetVoid: React.FC = () => {
             <div className="mb-1 flex items-end justify-center" style={{ height: '60px' }}>
               <motion.div
                 style={{
-                  width: 20,
-                  height: 45,
+                  width: 20, height: 45,
                   background: 'radial-gradient(ellipse at 50% 70%, rgba(155,123,255,0.3) 0%, transparent 70%)',
                   borderRadius: '50% 50% 30% 30% / 60% 60% 40% 40%',
                   border: '1px solid rgba(155,123,255,0.2)',
@@ -185,34 +166,20 @@ const PlanetVoid: React.FC = () => {
             </div>
           )}
 
-          {/* Wick */}
           <div className="w-0.5 h-3 rounded-t" style={{ background: '#555' }} />
-
-          {/* Candle body */}
           <div
-            className="w-10 h-28 rounded-b-sm rounded-t-none relative overflow-hidden"
+            className="w-10 h-28 rounded-b-sm relative overflow-hidden"
             style={{
               background: 'linear-gradient(to right, #f0e8d8, #e8d8bc, #d4c4a0)',
               boxShadow: 'inset -4px 0 8px rgba(0,0,0,0.2), 0 0 20px rgba(247,215,116,0.1)',
             }}
           >
-            {/* Wax drip */}
             <div
               className="absolute top-2 right-1"
-              style={{
-                width: 6,
-                height: 20,
-                background: '#e8d8bc',
-                borderRadius: '0 0 50% 50%',
-              }}
+              style={{ width: 6, height: 20, background: '#e8d8bc', borderRadius: '0 0 50% 50%' }}
             />
           </div>
-
-          {/* Base */}
-          <div
-            className="w-16 h-2 rounded-full"
-            style={{ background: 'linear-gradient(to right, #c0a060, #a08040, #c0a060)' }}
-          />
+          <div className="w-16 h-2 rounded-full" style={{ background: 'linear-gradient(to right, #c0a060, #a08040, #c0a060)' }} />
         </motion.div>
 
         {!candleLit && (
@@ -227,75 +194,34 @@ const PlanetVoid: React.FC = () => {
         )}
 
         {/* Carry flame button */}
-        <AnimatePresence>
-          {candleLit && phaseText >= voidTexts.length - 1 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center gap-3"
-            >
-              {!candleCarried ? (
-                <>
-                  <p className="font-cormorant text-gray-300 italic text-center max-w-xs">
-                    This flame represents the love that never goes out. Carry it with you.
-                  </p>
-                  <motion.button
-                    onClick={handleCarryFlame}
-                    className="px-8 py-3 rounded-full font-cinzel text-sm"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(247,215,116,0.2), rgba(255,122,182,0.2))',
-                      border: '1px solid rgba(247,215,116,0.6)',
-                      color: '#f7d774',
-                      boxShadow: '0 0 20px rgba(247,215,116,0.2)',
-                    }}
-                    whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(247,215,116,0.4)' }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    🕯️ Carry this flame
-                  </motion.button>
-                </>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-center"
-                >
-                  <div className="text-3xl mb-2">🕯️</div>
-                  <p className="font-cinzel text-sm" style={{ color: '#f7d774' }}>Flame carried across all worlds</p>
-                  <p className="font-cormorant text-xs text-gray-400 italic mt-1">Watch for it in the bottom-left corner</p>
-                </motion.div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+        {candleLit && phaseText >= voidTexts.length - 1 && !candleCarried && (
+          <motion.button
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            onClick={() => setCandle(true)}
+            className="px-6 py-3 rounded-full font-cinzel text-sm tracking-wider"
+            style={{
+              background: 'linear-gradient(135deg, rgba(247,215,116,0.15), rgba(255,122,182,0.1))',
+              border: '1px solid rgba(247,215,116,0.4)',
+              color: '#f7d774',
+            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            🕯️ Carry this flame
+          </motion.button>
+        )}
 
-      {/* Ambient particles from candle */}
-      {candleLit && Array.from({ length: 8 }).map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            width: 2,
-            height: 2,
-            background: '#f7d774',
-            left: '50%',
-            bottom: '35%',
-          }}
-          animate={{
-            x: [(Math.random() - 0.5) * 60],
-            y: [0, -100 - Math.random() * 100],
-            opacity: [0.8, 0],
-            scale: [1, 0],
-          }}
-          transition={{
-            duration: 2 + Math.random() * 2,
-            delay: Math.random() * 3,
-            repeat: Infinity,
-            ease: 'easeOut',
-          }}
-        />
-      ))}
+        {candleCarried && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="font-cormorant text-sm text-gray-400 italic"
+          >
+            ✓ The flame travels with you now
+          </motion.p>
+        )}
+      </div>
     </div>
   );
 };
