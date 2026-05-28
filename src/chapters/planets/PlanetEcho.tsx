@@ -62,11 +62,7 @@ const PlanetEcho: React.FC = () => {
           >
             <p
               className="font-cormorant text-sm italic text-center"
-              style={{
-                color: '#4488ff',
-                textShadow: '0 0 10px rgba(68,136,255,0.5)',
-                whiteSpace: 'nowrap',
-              }}
+              style={{ color: '#4488ff', textShadow: '0 0 10px rgba(68,136,255,0.5)', whiteSpace: 'nowrap' }}
             >
               {echo.text}
             </p>
@@ -86,10 +82,7 @@ const PlanetEcho: React.FC = () => {
             animate={{ opacity: [1, 0.6, 0], scale: [0.8, 1.2, 0.8] }}
             transition={{ duration: 4, ease: 'easeOut' }}
           >
-            <p
-              className="font-cormorant text-sm italic"
-              style={{ color: '#ff7ab6', textShadow: '0 0 10px rgba(255,122,182,0.5)' }}
-            >
+            <p className="font-cormorant text-sm italic" style={{ color: '#ff7ab6', textShadow: '0 0 10px rgba(255,122,182,0.5)' }}>
               {echo.text}
             </p>
           </motion.div>
