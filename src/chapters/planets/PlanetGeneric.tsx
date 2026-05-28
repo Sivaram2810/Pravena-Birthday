@@ -34,7 +34,8 @@ const PlanetGeneric: React.FC<PlanetGenericProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="w-full max-w-2xl glass rounded-3xl p-8"
+          className="w-full max-w-2xl rounded-3xl p-8"
+          style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${color}22` }}
         >
           <p className="font-cormorant text-lg text-gray-200 leading-relaxed italic whitespace-pre-line">
             {content}
@@ -50,8 +51,8 @@ const PlanetGeneric: React.FC<PlanetGenericProps> = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 + i * 0.1 }}
-              className="glass rounded-2xl p-5"
-              style={{ border: `1px solid ${color}22` }}
+              className="rounded-2xl p-5"
+              style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${color}22` }}
             >
               <div className="text-3xl mb-2">{f.icon}</div>
               <h3 className="font-cinzel text-sm font-bold mb-1" style={{ color }}>{f.title}</h3>
