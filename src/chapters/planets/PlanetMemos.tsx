@@ -39,11 +39,10 @@ const PlanetMemos: React.FC = () => {
             className="relative cursor-pointer"
             onClick={() => { if (!letter.sealed || sealBroken) setSelectedLetter(letter); }}
           >
-            {/* Envelope */}
             <div
               className="rounded-2xl overflow-hidden shadow-2xl"
               style={{
-                background: `linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))`,
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))',
                 border: `1px solid ${letterColors[i % letterColors.length]}44`,
                 boxShadow: `0 8px 32px rgba(0,0,0,0.3), 0 0 20px ${letterColors[i % letterColors.length]}22`,
               }}
@@ -72,16 +71,10 @@ const PlanetMemos: React.FC = () => {
 
               {/* Letter content preview */}
               <div className="p-4">
-                <div
-                  className="w-8 h-0.5 mb-3 rounded"
-                  style={{ background: letter.ink + '88' }}
-                />
+                <div className="w-8 h-0.5 mb-3 rounded" style={{ background: letter.ink + '88' }} />
                 <h3 className="font-cinzel text-sm font-bold text-white mb-1">{letter.title}</h3>
                 <p className="font-cormorant text-xs text-gray-400 italic mb-3">{letter.date}</p>
-                <div
-                  className="h-px w-full mb-3"
-                  style={{ background: `linear-gradient(to right, ${letter.ink}44, transparent)` }}
-                />
+                <div className="h-px w-full mb-3" style={{ background: `linear-gradient(to right, ${letter.ink}44, transparent)` }} />
                 <p className="font-cormorant text-xs text-gray-400 italic leading-relaxed line-clamp-3">
                   {letter.content.substring(0, 100)}...
                 </p>
@@ -120,14 +113,9 @@ const PlanetMemos: React.FC = () => {
         ))}
       </div>
 
-      {/* Watermark background text */}
-      <div
-        className="fixed inset-0 flex items-center justify-center pointer-events-none opacity-3 z-0"
-        style={{ transform: 'rotate(-45deg)' }}
-      >
-        <p className="font-cinzel text-9xl font-bold text-white opacity-5 select-none">
-          PRAVENA
-        </p>
+      {/* Watermark */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0" style={{ transform: 'rotate(-45deg)' }}>
+        <p className="font-cinzel text-9xl font-bold text-white opacity-5 select-none">PRAVENA</p>
       </div>
 
       {/* Letter modal */}
@@ -146,7 +134,7 @@ const PlanetMemos: React.FC = () => {
               animate={{ scale: 1, opacity: 1, rotateY: 0 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 150, damping: 20 }}
-              className="max-w-2xl w-full max-h-[85vh] overflow-y-auto custom-scroll rounded-3xl relative"
+              className="max-w-2xl w-full max-h-[85vh] overflow-y-auto rounded-3xl relative"
               style={{
                 background: 'linear-gradient(135deg, #1a0f0f, #0d0a20)',
                 border: `1px solid ${selectedLetter.ink}44`,
@@ -154,61 +142,37 @@ const PlanetMemos: React.FC = () => {
               }}
               onClick={e => e.stopPropagation()}
             >
-              {/* Paper texture overlay */}
               <div
                 className="absolute inset-0 rounded-3xl pointer-events-none"
                 style={{
                   backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(255,255,255,0.02) 28px, rgba(255,255,255,0.02) 29px)',
                 }}
               />
-
               <div className="relative z-10 p-8">
                 <button
                   onClick={() => setSelectedLetter(null)}
-                  className="absolute top-4 right-4 glass rounded-full p-2"
+                  className="absolute top-4 right-4 rounded-full p-2"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
                 >
                   <X size={16} className="text-gray-400" />
                 </button>
 
-                {/* Header */}
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-1">
-                    {selectedLetter.sealed && (
-                      <Unlock size={12} style={{ color: '#f7d774' }} />
-                    )}
-                    <span className="font-cinzel text-xs tracking-widest text-gray-500">
-                      {selectedLetter.date}
-                    </span>
+                    {selectedLetter.sealed && <Unlock size={12} style={{ color: '#f7d774' }} />}
+                    <span className="font-cinzel text-xs tracking-widest text-gray-500">{selectedLetter.date}</span>
                   </div>
-                  <h2
-                    className="font-cinzel text-2xl font-bold"
-                    style={{ color: selectedLetter.ink }}
-                  >
+                  <h2 className="font-cinzel text-2xl font-bold" style={{ color: selectedLetter.ink }}>
                     {selectedLetter.title}
                   </h2>
-                  <div
-                    className="h-0.5 mt-3 w-24 rounded"
-                    style={{ background: selectedLetter.ink + '66' }}
-                  />
+                  <div className="h-px mt-3" style={{ background: `linear-gradient(to right, ${selectedLetter.ink}66, transparent)` }} />
                 </div>
 
-                {/* Letter body */}
-                <div className="font-cormorant text-base md:text-lg text-gray-200 leading-relaxed whitespace-pre-line">
+                <div
+                  className="font-cormorant text-lg text-gray-200 leading-relaxed italic whitespace-pre-line"
+                  style={{ lineHeight: '2rem' }}
+                >
                   {selectedLetter.content}
-                </div>
-
-                {/* Bottom flourish */}
-                <div className="mt-8 text-center">
-                  <div
-                    className="inline-flex items-center gap-2 px-4 py-1 rounded-full text-xs font-cinzel"
-                    style={{
-                      background: `${selectedLetter.ink}11`,
-                      border: `1px solid ${selectedLetter.ink}33`,
-                      color: selectedLetter.ink + 'cc',
-                    }}
-                  >
-                    💌 Written with love
-                  </div>
                 </div>
               </div>
             </motion.div>
