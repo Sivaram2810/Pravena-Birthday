@@ -1,210 +1,253 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { SCROLL_LETTER } from '../../data/content';
+
+const SCROLL_TEXT = `Chapter I — The Signal
+
+Before I knew what patience was, I sent one message.
+You said don't message again.
+I messaged again.
+
+That was the beginning.
+
+∙ ∙ ∙
+
+Chapter II — The Wait
+
+For three months I learned you.
+Not in a rush. Not with expectations.
+Just... slowly. Like reading a book you never want to end.
+
+Memes. Laugh emojis. Silence. Then, one day —
+conversation.
+
+The kind that doesn't stop.
+
+∙ ∙ ∙
+
+Chapter III — The Question
+
+I asked who you liked.
+You said no one.
+You asked mine.
+
+I told the truth.
+
+"You."
+
+You were shocked. I was terrified.
+But I meant it.
+
+∙ ∙ ∙
+
+Chapter IV — November
+
+You admitted it.
+That you felt something too.
+
+I didn't say anything dramatic.
+I just... waited.
+Because I knew the real moment was still coming.
+
+∙ ∙ ∙
+
+Chapter V — December 18th
+
+Around 2 PM.
+I asked the question properly.
+
+You needed time.
+
+I gave it to you without hesitation.
+
+∙ ∙ ∙
+
+Chapter VI — December 19th, 5:30 AM
+
+We were talking. You said bye.
+I said bye.
+
+Then —
+
+"Love you."
+
+I sat there. I read it again.
+I read it seven times.
+
+I went to the biology exam and barely wrote anything.
+Every time I looked up, I saw you.
+Every time you caught me staring, you laughed.
+
+That laugh.
+That morning.
+That exam I nearly failed for you.
+
+∙ ∙ ∙
+
+Chapter VII — Since Then
+
+We have had our ups and downs.
+We have had our quiet days and our loud ones.
+We have had the kind of moments that don't fit into words.
+
+But they all led here.
+
+To this app. This birthday. This moment.
+
+∙ ∙ ∙
+
+P.S. — I would choose you again in every version of this story.
+Every single one.
+
+— Sivaram 💛`;
 
 const PlanetScroll: React.FC = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = el;
-      const progress = scrollTop / (scrollHeight - clientHeight);
-      setScrollProgress(progress);
-    };
-    el.addEventListener('scroll', handleScroll);
-    return () => el.removeEventListener('scroll', handleScroll);
-  }, []);
+  const handleScroll = () => {
+    if (!containerRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+    const progress = scrollTop / (scrollHeight - clientHeight);
+    setScrollProgress(progress);
+  };
 
-  // Background transitions from day to night based on scroll
-  const dayColor = `rgba(254,243,200,${1 - scrollProgress})`;
-  const nightOverlay = `rgba(5,8,22,${scrollProgress * 0.8})`;
-
-  const paragraphs = SCROLL_LETTER.split('\n\n').filter(p => p.trim());
+  const paragraphs = SCROLL_TEXT.split('\n').filter(line => line !== undefined);
 
   return (
-    <div className="h-screen flex flex-col">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center py-6 flex-shrink-0"
-      >
+    <div className="min-h-screen px-4 py-8 flex flex-col items-center gap-8">
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
         <h1
           className="font-cinzel text-3xl md:text-5xl font-bold"
-          style={{ color: '#d4a96a', textShadow: '0 0 30px rgba(212,169,106,0.5)' }}
+          style={{ color: '#d4a843', textShadow: '0 0 30px rgba(212,168,67,0.5)' }}
         >
           📜 SCROLL
         </h1>
-        <p className="font-cormorant text-gray-300 mt-1 italic">The letter that never ends</p>
+        <p className="font-cormorant text-lg text-gray-300 mt-2 italic">Our story, written in stars</p>
       </motion.div>
 
-      {/* Progress bar */}
-      <div className="w-full h-0.5 flex-shrink-0" style={{ background: 'rgba(255,255,255,0.05)' }}>
-        <motion.div
-          className="h-full"
-          style={{
-            width: `${scrollProgress * 100}%`,
-            background: 'linear-gradient(to right, #d4a96a, #f7d774)',
-          }}
-        />
+      {/* Scroll progress indicator */}
+      <div className="w-full max-w-2xl">
+        <div className="h-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.1)' }}>
+          <motion.div
+            className="h-full rounded-full"
+            style={{
+              width: `${scrollProgress * 100}%`,
+              background: scrollProgress > 0.8 ? '#f7d774' : '#8b7355',
+              transition: 'width 0.1s, background 1s',
+            }}
+          />
+        </div>
       </div>
 
-      {/* Scrollable content */}
+      {/* Scroll container */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-y-auto custom-scroll relative"
+        onScroll={handleScroll}
+        className="w-full max-w-2xl rounded-3xl overflow-y-auto relative"
         style={{
-          background: `linear-gradient(to bottom, ${dayColor}, rgba(20, 10, 40, ${scrollProgress * 0.9}))`,
-          transition: 'background 0.3s ease',
+          height: '60vh',
+          background: scrollProgress < 0.5
+            ? 'linear-gradient(135deg, #2a1810, #1a0f05)'
+            : 'linear-gradient(135deg, #1a0a05, #050816)',
+          border: `1px solid ${scrollProgress > 0.8 ? 'rgba(247,215,116,0.3)' : 'rgba(139,90,43,0.3)'}`,
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'rgba(139,90,43,0.5) transparent',
+          transition: 'background 1s, border-color 1s',
         }}
       >
-        {/* Night overlay */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: nightOverlay,
-            transition: 'background 0.3s ease',
-          }}
-        />
-
-        {/* Stars appearing as night falls */}
-        {scrollProgress > 0.5 && Array.from({ length: 30 }).map((_, i) => (
-          <motion.div
+        {/* Parchment texture lines */}
+        {scrollProgress < 0.3 && Array.from({ length: 30 }).map((_, i) => (
+          <div
             key={i}
-            className="fixed rounded-full pointer-events-none"
+            className="absolute left-4 right-4 pointer-events-none"
             style={{
-              width: 1 + Math.random() * 2,
-              height: 1 + Math.random() * 2,
-              background: 'white',
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 60}%`,
-              opacity: (scrollProgress - 0.5) * 2 * (0.2 + Math.random() * 0.5),
+              top: `${i * 3.5}%`,
+              height: 1,
+              background: 'rgba(139,90,43,0.08)',
             }}
           />
         ))}
 
-        {/* Parchment paper */}
-        <div className="relative z-10 max-w-2xl mx-auto px-4 md:px-8 py-8">
-          {/* Parchment background */}
-          <div
-            className="relative rounded-2xl overflow-hidden shadow-2xl"
-            style={{
-              background: scrollProgress < 0.5
-                ? `linear-gradient(135deg, #f5e6c8, #ede0c4, #f0e0c0)`
-                : `linear-gradient(135deg, rgba(45,27,105,0.8), rgba(20,10,50,0.9))`,
-              transition: 'background 1s ease',
-              padding: '2rem 2.5rem',
-            }}
-          >
-            {/* Parchment texture lines */}
-            {scrollProgress < 0.3 && Array.from({ length: 20 }).map((_, i) => (
-              <div
-                key={i}
-                className="absolute left-0 right-0 pointer-events-none"
-                style={{
-                  height: '1px',
-                  background: 'rgba(139,90,43,0.05)',
-                  top: `${i * 5 + 2}%`,
-                }}
-              />
-            ))}
-
-            {/* Quill icon */}
-            <div className="text-center mb-6">
-              <span className="text-4xl">{scrollProgress < 0.5 ? '🖋️' : '✨'}</span>
-            </div>
-
-            {paragraphs.map((para, i) => {
-              const isChapterHeader = para.startsWith('Chapter');
-              const isPS = para.startsWith('P.S.');
-
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-50px' }}
-                  transition={{ duration: 0.6, delay: 0.1 }}
-                  className="mb-6"
-                >
-                  {isChapterHeader ? (
-                    <h2
-                      className="font-cinzel text-lg font-bold mb-3 text-center"
-                      style={{
-                        color: scrollProgress < 0.4 ? '#5a3010' : '#f7d774',
-                        textShadow: scrollProgress > 0.4 ? '0 0 10px rgba(247,215,116,0.4)' : 'none',
-                      }}
-                    >
-                      {para}
-                    </h2>
-                  ) : para.includes('∙ ∙ ∙') ? (
-                    <div className="text-center my-4">
-                      <span
-                        style={{ color: scrollProgress < 0.5 ? '#8b7355' : '#9b7bff', letterSpacing: '0.5em' }}
-                      >
-                        ∙ ∙ ∙
-                      </span>
-                    </div>
-                  ) : (
-                    <p
-                      className="font-cormorant text-base md:text-lg leading-relaxed"
-                      style={{
-                        color: scrollProgress < 0.4 ? '#3d2b1f' : scrollProgress < 0.7 ? '#c0b090' : '#e0d8f0',
-                        fontStyle: isPS ? 'italic' : 'normal',
-                        transition: 'color 0.5s ease',
-                      }}
-                    >
-                      {para}
-                    </p>
-                  )}
-                </motion.div>
-              );
-            })}
-
-            {/* End flourish */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="text-center mt-8 pt-6"
-              style={{ borderTop: scrollProgress > 0.8 ? '1px solid rgba(247,215,116,0.2)' : '1px solid rgba(139,90,43,0.2)' }}
-            >
-              <span className="text-3xl">
-                {scrollProgress > 0.8 ? '🌌' : '🕊️'}
-              </span>
-              <p
-                className="font-cinzel text-sm mt-2 tracking-widest"
-                style={{ color: scrollProgress > 0.8 ? '#f7d774' : '#8b7355' }}
-              >
-                — FINIS —
-              </p>
-            </motion.div>
+        <div className="p-8 md:p-12">
+          {/* Quill icon */}
+          <div className="text-2xl mb-6 text-center">
+            {scrollProgress < 0.5 ? '🖋️' : '✨'}
           </div>
 
-          {/* Scroll percentage */}
-          <motion.div
-            className="fixed top-24 right-4 flex flex-col items-center gap-1"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
+          {paragraphs.map((para, i) => {
+            const isChapterHeader = para.startsWith('Chapter');
+            const isPS = para.startsWith('P.S.');
+            const isDivider = para.includes('∙ ∙ ∙');
+
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: i * 0.01 }}
+                className="mb-2"
+              >
+                {isChapterHeader ? (
+                  <h2
+                    className="font-cinzel text-sm font-bold mt-6 mb-3 tracking-widest"
+                    style={{
+                      color: scrollProgress > 0.4 ? '#f7d774' : '#8b7355',
+                      textShadow: scrollProgress > 0.4 ? '0 0 10px rgba(247,215,116,0.4)' : 'none',
+                      transition: 'color 1s, text-shadow 1s',
+                    }}
+                  >
+                    {para}
+                  </h2>
+                ) : isDivider ? (
+                  <div className="text-center my-6">
+                    <span className="font-cinzel text-sm text-gray-600">∙ ∙ ∙</span>
+                  </div>
+                ) : isPS ? (
+                  <p
+                    className="font-cormorant text-lg italic mt-4"
+                    style={{ color: '#f7d774' }}
+                  >
+                    {para}
+                  </p>
+                ) : (
+                  <p
+                    className="font-cormorant text-base leading-relaxed"
+                    style={{
+                      color: scrollProgress > 0.6 ? '#e0d0c0' : '#c0a080',
+                      transition: 'color 1s',
+                      lineHeight: '1.9rem',
+                    }}
+                  >
+                    {para}
+                  </p>
+                )}
+              </motion.div>
+            );
+          })}
+
+          {/* End flourish */}
+          <div
+            className="mt-8 pt-6 flex flex-col items-center gap-2"
+            style={{ borderTop: scrollProgress > 0.8 ? '1px solid rgba(247,215,116,0.2)' : '1px solid rgba(139,90,43,0.2)' }}
           >
-            <div
-              className="w-1 rounded-full overflow-hidden"
-              style={{ height: 80, background: 'rgba(255,255,255,0.1)' }}
+            <span className="text-2xl">{scrollProgress > 0.8 ? '🌌' : '🕊️'}</span>
+            <p
+              className="font-cinzel text-xs tracking-widest"
+              style={{ color: scrollProgress > 0.8 ? '#f7d774' : '#8b7355' }}
             >
-              <div
-                className="w-full rounded-full transition-all"
-                style={{
-                  height: `${scrollProgress * 100}%`,
-                  background: 'linear-gradient(to bottom, #d4a96a, #9b7bff)',
-                }}
-              />
-            </div>
-          </motion.div>
+              — FINIS —
+            </p>
+          </div>
         </div>
       </div>
+
+      <motion.p
+        animate={{ opacity: [0.4, 0.8, 0.4] }}
+        transition={{ duration: 3, repeat: Infinity }}
+        className="font-cormorant text-xs text-gray-600 italic"
+      >
+        Scroll to unfold our story
+      </motion.p>
     </div>
   );
 };
