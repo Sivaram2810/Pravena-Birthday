@@ -1,345 +1,325 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, Volume2, VolumeX, Disc3, Music2 } from 'lucide-react';
-import { VINYL_RECORDS, MUSIC_TRACK } from '../../data/content';
+import { X, Play } from 'lucide-react';
+import { FRIEND_VIDEOS } from '../../data/content';
+
+const BIRTHDAY_MESSAGES = [
+  {
+    id: 'msg1',
+    from: 'From Someone Who Cares',
+    emoji: '💜',
+    color: '#9b7bff',
+    message: 'Hey Pravena! Wishing you the most magical birthday. You deserve all the happiness the universe can offer. Have an amazing year ahead! 🎉',
+    type: 'text',
+  },
+  {
+    id: 'msg2',
+    from: 'A Birthday Wish',
+    emoji: '🌟',
+    color: '#f7d774',
+    message: 'Happy Birthday! May every single day this year bring you joy, laughter, and all your favourite things. You are truly special. ✨',
+    type: 'text',
+  },
+  {
+    id: 'msg3',
+    from: 'A Surprise Note',
+    emoji: '🎂',
+    color: '#ff7ab6',
+    message: 'Pravena — you light up every room you walk into. Thank you for being you. Wishing you the birthday you deserve! 💖',
+    type: 'text',
+  },
+];
 
 const PlanetFrequency: React.FC = () => {
-  const [selectedRecord, setSelectedRecord] = useState<typeof VINYL_RECORDS[0] | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const [selectedVideo, setSelectedVideo] = useState<typeof FRIEND_VIDEOS[0] | null>(null);
+  const [expandedMessage, setExpandedMessage] = useState<string | null>(null);
+  const [revealedCards, setRevealedCards] = useState<Set<string>>(new Set());
 
-  const handleSelectRecord = (record: typeof VINYL_RECORDS[0]) => {
-    setSelectedRecord(record);
-    setIsPlaying(false);
-    setProgress(0);
+  const revealCard = (id: string) => {
+    setRevealedCards(prev => new Set([...prev, id]));
   };
-
-  const togglePlay = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isPlaying) {
-      audio.pause();
-      setIsPlaying(false);
-    } else {
-      audio.play().catch(console.error);
-      setIsPlaying(true);
-    }
-  };
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const update = () => {
-      if (audio.duration) {
-        setProgress((audio.currentTime / audio.duration) * 100);
-        setCurrentTime(audio.currentTime);
-        setDuration(audio.duration);
-      }
-    };
-    audio.addEventListener('timeupdate', update);
-    audio.addEventListener('loadedmetadata', update);
-    return () => {
-      audio.removeEventListener('timeupdate', update);
-      audio.removeEventListener('loadedmetadata', update);
-    };
-  }, [selectedRecord]);
-
-  const formatTime = (s: number) => {
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    return `${m}:${sec.toString().padStart(2, '0')}`;
-  };
-
-  const specialRecord = VINYL_RECORDS.find(r => r.isSpecial);
 
   return (
-    <div className="min-h-screen px-4 py-8 flex flex-col items-center gap-8">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
+    <div className="min-h-screen px-4 py-8 flex flex-col items-center gap-10">
+      {/* Header */}
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
         <h1
           className="font-cinzel text-3xl md:text-5xl font-bold"
-          style={{ color: '#f7d774', textShadow: '0 0 30px rgba(247,215,116,0.5)' }}
+          style={{ color: '#00ffcc', textShadow: '0 0 30px rgba(0,255,204,0.5)' }}
         >
-          🎵 FREQUENCY
+          📡 FREQUENCY
         </h1>
         <p className="font-cormorant text-lg text-gray-300 mt-2 italic">
-          Music that holds every memory
+          Birthday wishes transmitted from across the galaxy
         </p>
       </motion.div>
 
-      <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-8">
-        {/* Record player */}
+      {/* Signal animation */}
+      <motion.div className="relative flex items-center justify-center" style={{ height: 60 }}>
+        {[1, 2, 3, 4, 5].map(i => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{ border: '1px solid rgba(0,255,204,0.3)' }}
+            initial={{ width: 0, height: 0, opacity: 0.8 }}
+            animate={{ width: i * 40, height: i * 40, opacity: 0 }}
+            transition={{ duration: 2, delay: i * 0.3, repeat: Infinity, ease: 'easeOut' }}
+          />
+        ))}
+        <div className="text-2xl z-10">📡</div>
+      </motion.div>
+
+      {/* Video Messages Section */}
+      <div className="w-full max-w-3xl">
         <motion.div
-          className="flex-1 glass rounded-3xl p-6 flex flex-col items-center gap-6"
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mb-6 text-center"
         >
-          {/* Turntable base */}
-          <div className="relative w-64 h-64">
-            {/* Base */}
-            <div
-              className="absolute inset-0 rounded-full"
-              style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)', boxShadow: 'inset 0 4px 20px rgba(0,0,0,0.5)' }}
-            />
-
-            {/* Vinyl record */}
-            <motion.div
-              className="absolute inset-4 rounded-full overflow-hidden"
-              animate={{ rotate: isPlaying ? 360 : 0 }}
-              transition={{ duration: 2, repeat: isPlaying ? Infinity : 0, ease: 'linear' }}
-            >
-              <div
-                className="w-full h-full rounded-full flex items-center justify-center"
-                style={{
-                  background: selectedRecord
-                    ? `conic-gradient(from 0deg, ${selectedRecord.color}44, #111, ${selectedRecord.color}22, #000, ${selectedRecord.color}33, #111, #000)`
-                    : 'conic-gradient(from 0deg, #222, #111, #333, #000, #222)',
-                }}
-              >
-                {/* Grooves */}
-                {[30, 45, 60, 75, 90].map(r => (
-                  <div
-                    key={r}
-                    className="absolute rounded-full border"
-                    style={{
-                      width: `${r}%`,
-                      height: `${r}%`,
-                      borderColor: 'rgba(255,255,255,0.03)',
-                    }}
-                  />
-                ))}
-                {/* Center label */}
-                <div
-                  className="absolute w-16 h-16 rounded-full flex items-center justify-center text-center z-10"
-                  style={{
-                    background: selectedRecord?.isSpecial
-                      ? 'radial-gradient(circle, #f7d774, #d4a800)'
-                      : `radial-gradient(circle, ${selectedRecord?.color || '#9b7bff'}, ${selectedRecord?.color || '#6644cc'}88)`,
-                  }}
-                >
-                  <div>
-                    <Disc3 size={14} className="mx-auto mb-0.5 text-white" />
-                    <p className="text-white font-cinzel leading-none" style={{ fontSize: '6px' }}>
-                      {selectedRecord?.title || 'SELECT'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Tonearm */}
-            <motion.div
-              className="absolute top-4 right-4 origin-top-right"
-              animate={{ rotate: isPlaying ? -15 : -30 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="w-20 h-0.5 bg-gray-400 origin-top-right rounded" />
-              <div className="absolute bottom-0 right-0 w-1.5 h-1.5 rounded-full bg-gray-300" />
-            </motion.div>
-          </div>
-
-          {/* Audio element */}
-          {selectedRecord?.isSpecial && (
-            <audio ref={audioRef} src={MUSIC_TRACK.url} preload="metadata" />
-          )}
-
-          {/* Now playing info */}
-          <AnimatePresence mode="wait">
-            {selectedRecord ? (
-              <motion.div
-                key={selectedRecord.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="text-center"
-              >
-                {selectedRecord.isSpecial && (
-                  <span
-                    className="inline-block px-2 py-0.5 rounded-full text-xs font-cinzel mb-2"
-                    style={{ background: 'rgba(247,215,116,0.2)', color: '#f7d774', border: '1px solid rgba(247,215,116,0.3)' }}
-                  >
-                    ⭐ Our Song
-                  </span>
-                )}
-                <h3
-                  className="font-cinzel text-xl font-bold"
-                  style={{ color: selectedRecord.isSpecial ? '#f7d774' : selectedRecord.color }}
-                >
-                  {selectedRecord.title}
-                </h3>
-                <p className="font-cormorant text-gray-300 italic">{selectedRecord.artist}</p>
-                <p className="font-inter text-xs text-gray-500 mt-1">{selectedRecord.description}</p>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="empty"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center"
-              >
-                <Music2 className="mx-auto mb-2 text-gray-600" size={32} />
-                <p className="font-cormorant text-gray-400 italic">Select a record to play</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Controls */}
-          {selectedRecord && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full flex flex-col gap-3">
-              {/* Progress bar — only for Our Song */}
-              {selectedRecord.isSpecial && (
-                <div className="w-full">
-                  <div
-                    className="w-full h-1 rounded-full cursor-pointer overflow-hidden"
-                    style={{ background: 'rgba(255,255,255,0.1)' }}
-                    onClick={e => {
-                      const audio = audioRef.current;
-                      if (!audio) return;
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      const ratio = (e.clientX - rect.left) / rect.width;
-                      audio.currentTime = ratio * audio.duration;
-                    }}
-                  >
-                    <motion.div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${progress}%`,
-                        background: 'linear-gradient(to right, #f7d774, #ff7ab6)',
-                      }}
-                    />
-                  </div>
-                  <div className="flex justify-between mt-1">
-                    <span className="text-xs text-gray-500">{formatTime(currentTime)}</span>
-                    <span className="text-xs text-gray-500">{formatTime(duration)}</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Waveform visualization */}
-              <div className="flex items-center justify-center gap-1 h-8">
-                {Array.from({ length: 20 }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="w-1 rounded-full"
-                    style={{ background: selectedRecord.isSpecial ? '#f7d774' : selectedRecord.color }}
-                    animate={isPlaying ? { height: [`${4 + Math.random() * 4}px`, `${12 + Math.random() * 20}px`, `${4 + Math.random() * 4}px`] } : { height: '4px' }}
-                    transition={{ duration: 0.5 + Math.random() * 0.5, repeat: Infinity, delay: i * 0.05 }}
-                  />
-                ))}
-              </div>
-
-              {/* Play/Mute buttons — only for Our Song */}
-              {selectedRecord.isSpecial && (
-                <div className="flex items-center justify-center gap-4">
-                  <button
-                    onClick={() => {
-                      const audio = audioRef.current;
-                      if (!audio) return;
-                      audio.muted = !isMuted;
-                      setIsMuted(!isMuted);
-                    }}
-                    className="p-2 rounded-full glass"
-                  >
-                    {isMuted ? <VolumeX size={16} className="text-gray-400" /> : <Volume2 size={16} className="text-gray-400" />}
-                  </button>
-                  <motion.button
-                    onClick={togglePlay}
-                    className="w-14 h-14 rounded-full flex items-center justify-center"
-                    style={{ background: 'linear-gradient(135deg, #f7d774, #ff7ab6)', boxShadow: '0 0 20px rgba(247,215,116,0.4)' }}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {isPlaying ? <Pause size={22} className="text-black" /> : <Play size={22} className="text-black" />}
-                  </motion.button>
-                </div>
-              )}
-              {!selectedRecord.isSpecial && (
-                <p className="text-center font-cormorant text-sm text-gray-500 italic">
-                  "This melody lives in memory..."
-                </p>
-              )}
-            </motion.div>
-          )}
+          <h2 className="font-cinzel text-lg tracking-widest" style={{ color: '#00ffcc' }}>
+            🎬 VIDEO MESSAGES
+          </h2>
+          <p className="font-cormorant text-sm text-gray-400 italic mt-1">
+            Friends sent their love — tap to view
+          </p>
         </motion.div>
 
-        {/* Records shelf */}
-        <motion.div
-          className="flex-1 glass rounded-3xl p-6"
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <h2 className="font-cinzel text-lg mb-4" style={{ color: '#ff7ab6' }}>Record Collection</h2>
-          <div className="grid grid-cols-2 gap-3 custom-scroll overflow-y-auto max-h-96">
-            {VINYL_RECORDS.map((record, i) => (
-              <motion.button
-                key={record.id}
-                onClick={() => handleSelectRecord(record)}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.05 }}
-                className="relative flex flex-col items-center p-3 rounded-xl cursor-pointer transition-all"
-                style={{
-                  background: selectedRecord?.id === record.id
-                    ? `rgba(${record.color === '#f7d774' ? '247,215,116' : '155,123,255'}, 0.15)`
-                    : 'rgba(255,255,255,0.03)',
-                  border: selectedRecord?.id === record.id
-                    ? `1px solid ${record.color}88`
-                    : '1px solid rgba(255,255,255,0.08)',
-                }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                {record.isSpecial && (
-                  <span className="absolute -top-1 -right-1 text-xs">⭐</span>
-                )}
-                {/* Mini record */}
-                <div
-                  className="w-12 h-12 rounded-full mb-2 flex items-center justify-center relative"
-                  style={{
-                    background: `conic-gradient(from 0deg, ${record.color}66, #111, ${record.color}33, #000)`,
-                    boxShadow: `0 0 10px ${record.color}44`,
-                  }}
-                >
-                  <div
-                    className="w-4 h-4 rounded-full"
-                    style={{ background: record.isSpecial ? '#f7d774' : record.color }}
-                  />
-                </div>
-                <p className="font-cinzel text-xs text-center leading-tight" style={{ color: record.color, fontSize: '10px' }}>
-                  {record.title}
-                </p>
-                <p className="font-cormorant text-gray-500 text-center" style={{ fontSize: '10px' }}>
-                  {record.artist}
-                </p>
-              </motion.button>
-            ))}
-          </div>
-
-          {/* Special gold record callout */}
-          {specialRecord && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+          {FRIEND_VIDEOS.map((video, i) => (
             <motion.div
-              className="mt-4 p-3 rounded-xl"
-              style={{ background: 'rgba(247,215,116,0.08)', border: '1px solid rgba(247,215,116,0.3)' }}
-              animate={{ boxShadow: ['0 0 10px rgba(247,215,116,0.1)', '0 0 20px rgba(247,215,116,0.3)', '0 0 10px rgba(247,215,116,0.1)'] }}
-              transition={{ duration: 3, repeat: Infinity }}
+              key={video.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 + i * 0.1 }}
+              className="rounded-2xl overflow-hidden cursor-pointer relative"
+              style={{
+                background: video.placeholder
+                  ? 'linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))'
+                  : `linear-gradient(135deg, ${video.color}22, ${video.color}08)`,
+                border: `1px solid ${video.color}44`,
+                minHeight: 160,
+              }}
+              whileHover={{ scale: 1.02, borderColor: video.color + '88' }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => video.videoUrl ? setSelectedVideo(video) : null}
             >
-              <p className="font-cinzel text-xs" style={{ color: '#f7d774' }}>✨ Gold Record — "{specialRecord.title}"</p>
-              <p className="font-cormorant text-xs text-gray-400 italic mt-1">
-                This is the one. The song that holds everything.
-              </p>
+              {/* Thumbnail / Placeholder */}
+              <div
+                className="w-full flex items-center justify-center relative"
+                style={{ minHeight: 110, background: video.placeholder ? 'rgba(0,0,0,0.3)' : 'transparent' }}
+              >
+                {video.placeholder ? (
+                  <motion.div
+                    className="flex flex-col items-center gap-2"
+                    animate={{ opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <span className="text-4xl">{video.emoji}</span>
+                    <span className="font-cinzel text-xs" style={{ color: video.color }}>COMING SOON</span>
+                  </motion.div>
+                ) : (
+                  <>
+                    {video.thumbnail && (
+                      <img src={video.thumbnail} alt={video.name} className="w-full h-full object-cover absolute inset-0" />
+                    )}
+                    <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.4)' }}>
+                      <div
+                        className="w-12 h-12 rounded-full flex items-center justify-center"
+                        style={{ background: `${video.color}cc` }}
+                      >
+                        <Play size={20} className="text-white" fill="white" />
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <div className="p-3">
+                <p className="font-cinzel text-xs font-bold" style={{ color: video.color }}>{video.name}</p>
+                <p className="font-cormorant text-xs text-gray-400 italic mt-1">{video.message}</p>
+              </div>
             </motion.div>
-          )}
+          ))}
+        </div>
+
+        {/* Add video note */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="rounded-2xl p-4 mb-10"
+          style={{
+            background: 'rgba(0,255,204,0.04)',
+            border: '1px dashed rgba(0,255,204,0.2)',
+          }}
+        >
+          <p className="font-cinzel text-xs text-center tracking-widest" style={{ color: 'rgba(0,255,204,0.5)' }}>
+            📌 VIDEO LINKS WILL BE ADDED HERE
+          </p>
+          <p className="font-cormorant text-xs text-center text-gray-600 italic mt-1">
+            When friends send their videos, they'll appear above
+          </p>
+        </motion.div>
+
+        {/* Birthday Wish Cards */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mb-6 text-center"
+        >
+          <h2 className="font-cinzel text-lg tracking-widest" style={{ color: '#ff7ab6' }}>
+            💌 BIRTHDAY WISHES
+          </h2>
+          <p className="font-cormorant text-sm text-gray-400 italic mt-1">
+            Tap a card to reveal the message inside
+          </p>
+        </motion.div>
+
+        <div className="flex flex-col gap-4">
+          {BIRTHDAY_MESSAGES.map((msg, i) => (
+            <motion.div
+              key={msg.id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 + i * 0.1 }}
+              className="rounded-2xl overflow-hidden cursor-pointer"
+              style={{
+                background: revealedCards.has(msg.id)
+                  ? `linear-gradient(135deg, ${msg.color}12, ${msg.color}06)`
+                  : 'rgba(255,255,255,0.04)',
+                border: `1px solid ${msg.color}${revealedCards.has(msg.id) ? '66' : '33'}`,
+                boxShadow: revealedCards.has(msg.id) ? `0 0 20px ${msg.color}22` : 'none',
+              }}
+              onClick={() => {
+                if (!revealedCards.has(msg.id)) revealCard(msg.id);
+                setExpandedMessage(prev => prev === msg.id ? null : msg.id);
+              }}
+            >
+              <div className="p-4 flex items-center gap-4">
+                <motion.div
+                  className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 text-2xl"
+                  style={{ background: `${msg.color}22`, border: `1px solid ${msg.color}44` }}
+                  whileHover={{ scale: 1.1 }}
+                >
+                  {msg.emoji}
+                </motion.div>
+
+                <div className="flex-1">
+                  <p className="font-cinzel text-xs font-bold" style={{ color: msg.color }}>{msg.from}</p>
+                  {!revealedCards.has(msg.id) && (
+                    <motion.p
+                      className="font-cormorant text-xs text-gray-500 italic mt-1"
+                      animate={{ opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      ✨ Tap to reveal birthday wish...
+                    </motion.p>
+                  )}
+                  {revealedCards.has(msg.id) && (
+                    <p className="font-cormorant text-xs text-gray-400 italic mt-1 line-clamp-1">{msg.message}</p>
+                  )}
+                </div>
+
+                <span className="text-gray-600 text-xs">{expandedMessage === msg.id ? '▲' : '▼'}</span>
+              </div>
+
+              <AnimatePresence>
+                {expandedMessage === msg.id && revealedCards.has(msg.id) && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-4 pb-5 pt-1" style={{ borderTop: `1px solid ${msg.color}22` }}>
+                      <p
+                        className="font-cormorant text-base italic text-gray-200 leading-relaxed"
+                        style={{ paddingLeft: '56px' }}
+                      >
+                        {msg.message}
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Surprise Clips section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+          className="mt-10 rounded-3xl p-6 text-center"
+          style={{
+            background: 'linear-gradient(135deg, rgba(247,215,116,0.06), rgba(0,255,204,0.06))',
+            border: '1px solid rgba(247,215,116,0.2)',
+          }}
+        >
+          <div className="text-4xl mb-3">🎁</div>
+          <h3 className="font-cinzel text-sm tracking-widest mb-2" style={{ color: '#f7d774' }}>
+            MORE SURPRISES LOADING...
+          </h3>
+          <p className="font-cormorant text-sm text-gray-400 italic">
+            Memorable moments, surprise clips, and more are being prepared for you.
+            Every signal is a reminder: you are deeply loved. 💛
+          </p>
+          <motion.div
+            className="flex justify-center gap-1 mt-4"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            {[0, 1, 2].map(i => (
+              <div key={i} className="w-2 h-2 rounded-full" style={{ background: '#f7d774' }} />
+            ))}
+          </motion.div>
         </motion.div>
       </div>
+
+      {/* Video modal */}
+      <AnimatePresence>
+        {selectedVideo && selectedVideo.videoUrl && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center px-4"
+            style={{ background: 'rgba(0,0,0,0.95)' }}
+            onClick={() => setSelectedVideo(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+              className="relative max-w-2xl w-full rounded-2xl overflow-hidden"
+              onClick={e => e.stopPropagation()}
+              style={{ border: `1px solid ${selectedVideo.color}44` }}
+            >
+              <button
+                onClick={() => setSelectedVideo(null)}
+                className="absolute top-3 right-3 z-10 p-2 rounded-full"
+                style={{ background: 'rgba(0,0,0,0.6)' }}
+              >
+                <X size={18} className="text-white" />
+              </button>
+              <video
+                src={selectedVideo.videoUrl}
+                controls
+                autoPlay
+                className="w-full rounded-2xl"
+                style={{ maxHeight: '70vh' }}
+              />
+              <div className="p-4" style={{ background: 'rgba(5,8,22,0.95)' }}>
+                <p className="font-cinzel text-sm font-bold" style={{ color: selectedVideo.color }}>{selectedVideo.name}</p>
+                <p className="font-cormorant text-sm text-gray-400 italic mt-1">{selectedVideo.message}</p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
