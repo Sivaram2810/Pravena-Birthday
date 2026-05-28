@@ -44,7 +44,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       candleCarried, vaultUnlocked, currentPlanet, audioPlaying, audioMuted,
       visitedPlanets, quizScore,
       setCandle, unlockVault, setCurrentPlanet, toggleAudio, toggleMute,
-      visitPlanet, setQuizScore
+      visitPlanet, setQuizScore,
     }}>
       {children}
     </AppContext.Provider>
