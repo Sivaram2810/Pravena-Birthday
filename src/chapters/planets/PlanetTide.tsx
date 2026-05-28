@@ -4,10 +4,7 @@ import { TIDE_MESSAGES } from '../../data/content';
 
 const PlanetTide: React.FC = () => {
   const [currentMessage, setCurrentMessage] = useState(0);
-
   const [started, setStarted] = useState(false);
-
-
 
   useEffect(() => {
     if (!started) return;
@@ -30,11 +27,11 @@ const PlanetTide: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col relative overflow-hidden transition-all duration-2000"
-      style={{ background: `linear-gradient(to bottom, ${phaseColor.sky}, #020108)` }}
+      className="min-h-screen flex flex-col relative overflow-hidden"
+      style={{ background: `linear-gradient(to bottom, ${phaseColor.sky}, #020108)`, transition: 'background 2s ease' }}
     >
-      {/* Stars that appear as darkness falls */}
-      {TIDE_MESSAGES[currentMessage]?.phase === 'after' && (
+      {/* Stars (appear in 'after' phase) */}
+      {msg?.phase === 'after' && (
         Array.from({ length: 40 }).map((_, i) => (
           <motion.div
             key={i}
@@ -53,24 +50,17 @@ const PlanetTide: React.FC = () => {
       )}
 
       {/* Moon */}
-      {TIDE_MESSAGES[currentMessage]?.phase !== 'before' && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 0.8, y: 0 }}
-          className="absolute top-10 right-16"
-        >
+      {msg?.phase !== 'before' && (
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 0.8, y: 0 }} className="absolute top-10 right-16">
           <div
             className="w-16 h-16 rounded-full"
-            style={{
-              background: 'radial-gradient(circle at 35% 35%, #fffff0, #c8c8a0)',
-              boxShadow: '0 0 30px rgba(220,220,180,0.3)',
-            }}
+            style={{ background: 'radial-gradient(circle at 35% 35%, #fffff0, #c8c8a0)', boxShadow: '0 0 30px rgba(220,220,180,0.3)' }}
           />
         </motion.div>
       )}
 
       {/* Sun */}
-      {TIDE_MESSAGES[currentMessage]?.phase === 'before' && (
+      {msg?.phase === 'before' && (
         <motion.div
           animate={{ y: [0, -5, 0] }}
           transition={{ duration: 4, repeat: Infinity }}
@@ -78,43 +68,28 @@ const PlanetTide: React.FC = () => {
         >
           <div
             className="w-16 h-16 rounded-full"
-            style={{
-              background: 'radial-gradient(circle, #fff9c4, #ffd700)',
-              boxShadow: '0 0 40px rgba(255,215,0,0.5)',
-            }}
+            style={{ background: 'radial-gradient(circle, #fff9c4, #ffd700)', boxShadow: '0 0 40px rgba(255,215,0,0.5)' }}
           />
         </motion.div>
       )}
 
       {/* Title */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center pt-10 z-10 relative"
-      >
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center pt-10 z-10 relative">
         <h1
           className="font-cinzel text-3xl md:text-5xl font-bold"
           style={{ color: phaseColor.text, textShadow: `0 0 30px ${phaseColor.wave}88`, transition: 'color 2s ease' }}
         >
           🌊 TIDE
         </h1>
-        <p className="font-cormorant text-lg text-gray-300 mt-2 italic">
-          The transformation story
-        </p>
+        <p className="font-cormorant text-lg text-gray-300 mt-2 italic">The transformation story</p>
       </motion.div>
 
       {/* Message display */}
       <div className="flex-1 flex items-center justify-center px-6 z-10 relative">
         {!started ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
             <div className="text-5xl mb-6">🌊</div>
-            <p className="font-cormorant text-xl text-gray-300 italic mb-8">
-              Let the tide tell you the story of change
-            </p>
+            <p className="font-cormorant text-xl text-gray-300 italic mb-8">Let the tide tell you the story of change</p>
             <motion.button
               onClick={() => setStarted(true)}
               className="px-8 py-3 rounded-full font-cinzel text-sm"
@@ -165,7 +140,6 @@ const PlanetTide: React.FC = () => {
               ))}
             </motion.div>
 
-            {/* Before/After labels */}
             <div className="flex justify-between mt-4 px-4">
               <span className="font-cinzel text-xs text-gray-600">Before</span>
               <span className="font-cinzel text-xs text-gray-600">After</span>
@@ -176,18 +150,13 @@ const PlanetTide: React.FC = () => {
 
       {/* Ocean waves */}
       <div className="relative z-10 overflow-hidden" style={{ height: 200 }}>
-        {/* Wave layers */}
         {[0, 1, 2].map(layer => (
           <motion.div
             key={layer}
             className="absolute bottom-0 left-0 right-0"
             style={{ height: 200 - layer * 30 }}
           >
-            <svg
-              viewBox="0 0 1200 200"
-              preserveAspectRatio="none"
-              className="w-full h-full"
-            >
+            <svg viewBox="0 0 1200 200" preserveAspectRatio="none" className="w-full h-full">
               <motion.path
                 d={`M0,${60 + layer * 20} C200,${20 + layer * 15} 400,${100 + layer * 20} 600,${60 + layer * 20} C800,${20 + layer * 15} 1000,${100 + layer * 20} 1200,${60 + layer * 20} L1200,200 L0,200 Z`}
                 fill={`${phaseColor.wave}${layer === 0 ? 'dd' : layer === 1 ? 'aa' : '77'}`}
@@ -198,31 +167,10 @@ const PlanetTide: React.FC = () => {
                     `M0,${60 + layer * 20} C200,${20 + layer * 15} 400,${100 + layer * 20} 600,${60 + layer * 20} C800,${20 + layer * 15} 1000,${100 + layer * 20} 1200,${60 + layer * 20} L1200,200 L0,200 Z`,
                   ],
                 }}
-                transition={{
-                  duration: 4 + layer * 1.5,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: layer * 0.5,
-                }}
+                transition={{ duration: 4 + layer * 1.5, repeat: Infinity, ease: 'easeInOut', delay: layer * 0.5 }}
               />
             </svg>
           </motion.div>
-        ))}
-
-        {/* Foam bubbles */}
-        {Array.from({ length: 10 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute bottom-8 rounded-full opacity-30"
-            style={{
-              width: 3 + Math.random() * 6,
-              height: 3 + Math.random() * 6,
-              background: 'white',
-              left: `${i * 10 + Math.random() * 8}%`,
-            }}
-            animate={{ y: [0, -10, 0], opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 2 + Math.random() * 2, repeat: Infinity, delay: Math.random() * 2 }}
-          />
         ))}
       </div>
     </div>
