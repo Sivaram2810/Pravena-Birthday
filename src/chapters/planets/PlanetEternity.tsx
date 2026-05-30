@@ -1,164 +1,132 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { STAR_MESSAGES } from '../../data/content';
+import { RELATIONSHIP_START, BIRTHDAY_DATE, UNIVERSE_NAME, SENDER_NAME } from '../../data/content';
+
+const getTimeSince = (dateStr: string) => {
+  const start = new Date(dateStr);
+  const now = new Date();
+  const diff = now.getTime() - start.getTime();
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+  return { days, hours, minutes, seconds };
+};
 
 const PlanetEternity: React.FC = () => {
-  const [hoveredStar, setHoveredStar] = useState<number | null>(null);
-  const [constellationDrawn, setConstellationDrawn] = useState(false);
-  const [lanternsReleased, setLanternsReleased] = useState(false);
-  const [selectedStar, setSelectedStar] = useState<number | null>(null);
+  const [elapsed, setElapsed] = useState(getTimeSince(RELATIONSHIP_START));
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    const iv = setInterval(() => {
+      setElapsed(getTimeSince(RELATIONSHIP_START));
+    }, 1000);
+    return () => clearInterval(iv);
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => setRevealed(true), 1500);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <div className="min-h-screen px-4 py-8 flex flex-col items-center gap-8">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-        <h1
-          className="font-cinzel text-3xl md:text-5xl font-bold"
-          style={{ color: '#c0c0ff', textShadow: '0 0 30px rgba(192,192,255,0.5)' }}
-        >
-          🌠 ETERNITY
+        <h1 className="font-cinzel text-3xl md:text-5xl font-bold" style={{ color: '#ffd6b0', textShadow: '0 0 30px rgba(255,214,176,0.5)' }}>
+          ♾️ ETERNITY
         </h1>
-        <p className="font-cormorant text-lg text-gray-300 mt-2 italic">A constellation mapped just for you</p>
+        <p className="font-cormorant text-lg text-gray-300 mt-2 italic">The place without an end</p>
       </motion.div>
 
-      {/* Star map */}
-      <div
-        className="relative w-full max-w-3xl rounded-3xl overflow-hidden"
-        style={{
-          height: 400,
-          background: 'radial-gradient(ellipse at 50% 50%, #0a0a20 0%, #020108 100%)',
-          border: '1px solid rgba(192,192,255,0.15)',
-        }}
+      {/* Live timer */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.3 }}
+        className="w-full max-w-sm"
       >
-        {/* Stars with messages */}
-        {STAR_MESSAGES.map((star, i) => (
-          <motion.div
-            key={i}
-            className="absolute cursor-pointer"
-            style={{ left: `${star.x}%`, top: `${star.y}%`, transform: 'translate(-50%, -50%)' }}
-            onMouseEnter={() => setHoveredStar(i)}
-            onMouseLeave={() => setHoveredStar(null)}
-            onClick={() => setSelectedStar(prev => prev === i ? null : i)}
-          >
-            <motion.div
-              className="rounded-full"
-              style={{
-                width: star.size * 4,
-                height: star.size * 4,
-                background: 'radial-gradient(circle, #ffffff, #c0c0ff)',
-                boxShadow: `0 0 ${star.size * 4}px rgba(192,192,255,0.8)`,
-              }}
-              animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 2 + i * 0.3, repeat: Infinity }}
-            />
-
-            <AnimatePresence>
-              {(hoveredStar === i || selectedStar === i) && (
+        <div
+          className="glass rounded-3xl p-6 text-center"
+          style={{ border: '1px solid rgba(255,214,176,0.3)', boxShadow: '0 0 40px rgba(255,214,176,0.06)' }}
+        >
+          <p className="font-cinzel text-xs tracking-widest mb-4 text-gray-500">
+            TIME SINCE "{UNIVERSE_NAME.toUpperCase()}"
+          </p>
+          <div className="grid grid-cols-4 gap-2 mb-4">
+            {[
+              { value: elapsed.days, label: 'DAYS' },
+              { value: elapsed.hours, label: 'HRS' },
+              { value: elapsed.minutes, label: 'MIN' },
+              { value: elapsed.seconds, label: 'SEC' },
+            ].map(({ value, label }) => (
+              <div key={label} className="flex flex-col items-center">
                 <motion.div
-                  initial={{ opacity: 0, y: 5, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 pointer-events-none"
-                  style={{ zIndex: 50, minWidth: '180px' }}
+                  key={value}
+                  className="font-cinzel text-2xl font-bold tabular-nums"
+                  style={{ color: '#ffd6b0' }}
+                  animate={{ scale: [1.1, 1] }}
+                  transition={{ duration: 0.15 }}
                 >
-                  <div
-                    className="px-3 py-2 rounded-xl text-center"
-                    style={{
-                      background: 'rgba(5,8,22,0.95)',
-                      border: '1px solid rgba(192,192,255,0.4)',
-                      boxShadow: '0 0 15px rgba(192,192,255,0.2)',
-                    }}
-                  >
-                    <p className="font-cormorant text-xs text-gray-200 italic">{star.message}</p>
-                  </div>
+                  {String(value).padStart(2, '0')}
                 </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        ))}
-
-        {/* Constellation lines */}
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        >
-          {constellationDrawn && (
-            <>
-              {STAR_MESSAGES.slice(0, -1).map((star, i) => {
-                const next = STAR_MESSAGES[i + 1];
-                return (
-                  <motion.line
-                    key={i}
-                    x1={star.x}
-                    y1={star.y}
-                    x2={next.x}
-                    y2={next.y}
-                    stroke="rgba(192,192,255,0.3)"
-                    strokeWidth="0.3"
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: i * 0.15 }}
-                  />
-                );
-              })}
-            </>
-          )}
-        </svg>
-
-        {/* Floating lanterns */}
-        {lanternsReleased && Array.from({ length: 8 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute text-xl pointer-events-none"
-            style={{ left: `${10 + i * 12}%`, bottom: '10%' }}
-            initial={{ y: 0, opacity: 0 }}
-            animate={{ y: -350, opacity: [0, 1, 1, 0] }}
-            transition={{ duration: 4 + i * 0.5, delay: i * 0.3, ease: 'easeOut' }}
-          >
-            🏮
-          </motion.div>
-        ))}
-
-        {/* Center label */}
-        <div className="absolute bottom-3 left-0 right-0 text-center">
-          <p className="font-cinzel text-xs text-gray-700 tracking-widest">PRAVENA'S CONSTELLATION</p>
+                <p className="font-cinzel text-xs text-gray-600 mt-0.5" style={{ fontSize: 8, letterSpacing: '0.1em' }}>
+                  {label}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="font-cormorant text-xs italic text-gray-500">
+            Since {RELATIONSHIP_START}
+          </p>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Controls */}
-      <div className="flex gap-3 flex-wrap justify-center">
-        <motion.button
-          onClick={() => setConstellationDrawn(true)}
-          className="px-4 py-2 rounded-full font-cinzel text-xs"
-          style={{
-            background: constellationDrawn ? 'rgba(192,192,255,0.2)' : 'rgba(192,192,255,0.1)',
-            border: '1px solid rgba(192,192,255,0.3)',
-            color: '#c0c0ff',
-          }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {constellationDrawn ? '✓ Constellation revealed' : '✨ Draw constellation'}
-        </motion.button>
+      {/* Message */}
+      <AnimatePresence>
+        {revealed && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-sm flex flex-col gap-4"
+          >
+            {[
+              'Every second of this counter is a second I\'ve been grateful.',
+              `${elapsed.days} days since everything changed. Not a single one wasted.`,
+              'Eternity isn\'t infinite time. It\'s the feeling that some moments could never be long enough.',
+              `Between ${SENDER_NAME} and ${UNIVERSE_NAME} — there is no countdown. Only continuation.`,
+            ].map((line, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.2 }}
+                className="glass rounded-2xl p-4"
+                style={{ border: '1px solid rgba(255,214,176,0.15)' }}
+              >
+                <p className="font-cormorant text-base italic text-gray-300 leading-relaxed">
+                  {line.replace('{days}', String(elapsed.days))}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        <motion.button
-          onClick={() => setLanternsReleased(true)}
-          className="px-4 py-2 rounded-full font-cinzel text-xs"
-          style={{
-            background: lanternsReleased ? 'rgba(247,215,116,0.2)' : 'rgba(247,215,116,0.1)',
-            border: '1px solid rgba(247,215,116,0.3)',
-            color: '#f7d774',
-          }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {lanternsReleased ? '✓ Lanterns released' : '🏮 Release lanterns'}
-        </motion.button>
-      </div>
-
-      <p className="font-cormorant text-sm text-gray-500 italic text-center max-w-md">
-        Each star holds a memory of us. Hover over the stars to read our story written in the sky.
-      </p>
+      {/* Birthday note */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+        className="w-full max-w-sm glass rounded-3xl p-6 text-center"
+        style={{ border: '1px solid rgba(255,214,176,0.25)' }}
+      >
+        <p className="text-3xl mb-2">🌅</p>
+        <p className="font-cinzel text-xs mb-1 text-gray-500">CELEBRATING</p>
+        <p className="font-cinzel text-sm font-bold" style={{ color: '#ffd6b0' }}>{BIRTHDAY_DATE}</p>
+        <p className="font-cormorant text-sm italic text-gray-400 mt-2">
+          Another year of being exactly you. The universe celebrates.
+        </p>
+      </motion.div>
     </div>
   );
 };
