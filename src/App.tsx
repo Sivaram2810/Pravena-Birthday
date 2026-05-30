@@ -1,86 +1,87 @@
-import React, { useState, useCallback } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AppProvider } from './contexts/AppContext';
+import { AppProvider, useApp } from './contexts/AppContext';
 import StarField from './components/StarField';
 import GlobalCandle from './components/GlobalCandle';
 import AudioPlayer from './components/AudioPlayer';
-import OpeningSignal from './chapters/OpeningSignal';
-import SolarSystem from './chapters/SolarSystem';
-import PlanetView from './chapters/PlanetView';
+import ProgressMap from './components/ProgressMap';
 
-type AppPhase = 'opening' | 'solar' | 'planet';
+// Lazy load heavy chapters
+const OpeningSignal = lazy(() => import('./chapters/OpeningSignal'));
+const SolarSystem = lazy(() => import('./chapters/SolarSystem'));
+const PlanetView = lazy(() => import('./chapters/PlanetView'));
 
 const AppContent: React.FC = () => {
-  const [phase, setPhase] = useState<AppPhase>('opening');
-  const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null);
-
-  const handleOpeningComplete = useCallback(() => {
-    setPhase('solar');
-  }, []);
-
-  const handlePlanetSelect = useCallback((id: string) => {
-    setSelectedPlanet(id);
-    setPhase('planet');
-  }, []);
-
-  const handleBackToSolar = useCallback(() => {
-    setSelectedPlanet(null);
-    setPhase('solar');
-  }, []);
+  const { phase, goToSolar, goToPlanet } = useApp();
 
   return (
-    <div className="relative min-h-screen" style={{ background: '#050816' }}>
-      {/* Persistent starfield background */}
+    <div
+      className="relative min-h-screen overflow-x-hidden"
+      style={{ background: '#050816' }}
+    >
+      {/* Persistent starfield — always renders */}
       <StarField />
 
-      {/* Global persistent UI */}
+      {/* Persistent ambient UI */}
       <GlobalCandle />
-      {phase !== 'opening' && <AudioPlayer />}
 
-      {/* Main content */}
-      <AnimatePresence mode="wait">
-        {phase === 'opening' && (
-          <motion.div key="opening" exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
-            <OpeningSignal onComplete={handleOpeningComplete} />
-          </motion.div>
-        )}
+      {/* Audio & progress map — shown once past opening */}
+      {phase !== 'opening' && (
+        <>
+          <AudioPlayer />
+          <ProgressMap />
+        </>
+      )}
 
-        {phase === 'solar' && (
-          <motion.div
-            key="solar"
-            className="relative z-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <SolarSystem onPlanetSelect={handlePlanetSelect} />
-          </motion.div>
-        )}
+      {/* Main content — phase-gated with cinematic transitions */}
+      <Suspense fallback={null}>
+        <AnimatePresence mode="wait">
+          {phase === 'opening' && (
+            <motion.div
+              key="opening"
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6 }}
+              style={{ position: 'relative', zIndex: 10 }}
+            >
+              <OpeningSignal onComplete={goToSolar} />
+            </motion.div>
+          )}
 
-        {phase === 'planet' && selectedPlanet && (
-          <motion.div
-            key={`planet-${selectedPlanet}`}
-            className="relative z-10"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.05 }}
-            transition={{ duration: 0.5 }}
-          >
-            <PlanetView planetId={selectedPlanet} onBack={handleBackToSolar} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {phase === 'solar' && (
+            <motion.div
+              key="solar"
+              className="relative z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.7 }}
+            >
+              <SolarSystem onPlanetSelect={goToPlanet} />
+            </motion.div>
+          )}
+
+          {phase === 'planet' && (
+            <motion.div
+              key="planet"
+              className="relative z-10"
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.02 }}
+              transition={{ duration: 0.45 }}
+            >
+              <PlanetView />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Suspense>
     </div>
   );
 };
 
-const App: React.FC = () => {
-  return (
-    <AppProvider>
-      <AppContent />
-    </AppProvider>
-  );
-};
+const App: React.FC = () => (
+  <AppProvider>
+    <AppContent />
+  </AppProvider>
+);
 
 export default App;
