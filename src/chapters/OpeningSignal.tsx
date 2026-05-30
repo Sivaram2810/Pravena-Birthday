@@ -1,44 +1,67 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useApp } from '../contexts/AppContext';
+import { UNIVERSE_NAME, BIRTHDAY_DATE } from '../data/content';
 
-const NAME_LETTERS = ['P', 'R', 'A', 'V', 'E', 'N', 'A'];
+const NAME_LETTERS = UNIVERSE_NAME.split('');
 
 interface OpeningSignalProps {
   onComplete: () => void;
 }
 
 const OpeningSignal: React.FC<OpeningSignalProps> = ({ onComplete }) => {
+  const { sessionCount } = useApp();
   const [phase, setPhase] = useState(0);
   const [text1, setText1] = useState('');
   const [text2, setText2] = useState('');
-  const [revealedLetters, setRevealedLetters] = useState(Array(7).fill(false));
+  const [revealedLetters, setRevealedLetters] = useState(Array(NAME_LETTERS.length).fill(false));
   const [heartbeatActive, setHeartbeatActive] = useState(false);
-  const timeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const intervals = useRef<ReturnType<typeof setInterval>[]>([]);
+  const [showSkip, setShowSkip] = useState(false);
+  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const intervalsRef = useRef<ReturnType<typeof setInterval>[]>([]);
+  const completedRef = useRef(false);
 
-  const sched = (fn: () => void, d: number) => {
+  const sched = useCallback((fn: () => void, d: number) => {
     const t = setTimeout(fn, d);
-    timeouts.current.push(t);
-  };
-
-  useEffect(() => {
-    sched(() => setPhase(1), 2000);
-    sched(() => setPhase(2), 3500);
-    sched(() => setPhase(3), 5000);
-    sched(() => setPhase(4), 6200);
-    sched(() => setPhase(5), 8500);
-    sched(() => setPhase(6), 10800);
-    sched(() => setPhase(7), 11800);
-    sched(() => setPhase(8), 14500);
-    sched(() => setPhase(9), 16500);
-
-    return () => {
-      timeouts.current.forEach(clearTimeout);
-      intervals.current.forEach(clearInterval);
-    };
+    timeoutsRef.current.push(t);
   }, []);
 
-  // Typewriter text1
+  const clearAll = useCallback(() => {
+    timeoutsRef.current.forEach(clearTimeout);
+    intervalsRef.current.forEach(clearInterval);
+    timeoutsRef.current = [];
+    intervalsRef.current = [];
+  }, []);
+
+  const complete = useCallback(() => {
+    if (completedRef.current) return;
+    completedRef.current = true;
+    clearAll();
+    onComplete();
+  }, [clearAll, onComplete]);
+
+  // Return visitor — faster opening
+  const baseDelay = sessionCount > 1 ? 0.6 : 1;
+
+  useEffect(() => {
+    // Show skip button after 2s
+    sched(() => setShowSkip(true), 2000);
+
+    sched(() => setPhase(1), 1800 * baseDelay);
+    sched(() => setPhase(2), 3200 * baseDelay);
+    sched(() => setPhase(3), 4800 * baseDelay);
+    sched(() => setPhase(4), 5800 * baseDelay);
+    sched(() => setPhase(5), 8000 * baseDelay);
+    sched(() => setPhase(6), 10000 * baseDelay);
+    sched(() => setPhase(7), 11200 * baseDelay);
+    sched(() => setPhase(8), 13800 * baseDelay);
+    sched(() => setPhase(9), 15800 * baseDelay);
+    sched(() => complete(), 17500 * baseDelay);
+
+    return clearAll;
+  }, []);
+
+  // Typewriter text 1
   useEffect(() => {
     if (phase === 4) {
       const txt = '— SIGNAL DETECTED —';
@@ -46,25 +69,25 @@ const OpeningSignal: React.FC<OpeningSignalProps> = ({ onComplete }) => {
       const iv = setInterval(() => {
         setText1(txt.slice(0, ++i));
         if (i >= txt.length) clearInterval(iv);
-      }, 70);
-      intervals.current.push(iv);
+      }, 65);
+      intervalsRef.current.push(iv);
     }
   }, [phase]);
 
-  // Typewriter text2
+  // Typewriter text 2
   useEffect(() => {
     if (phase === 5) {
-      const txt = 'Source: Someone who loves you unconditionally\nDistance: Irrelevant';
+      const txt = `Source: Someone who loves you unconditionally\nDistance: Irrelevant\nDate: ${BIRTHDAY_DATE}`;
       let i = 0;
       const iv = setInterval(() => {
         setText2(txt.slice(0, ++i));
         if (i >= txt.length) clearInterval(iv);
-      }, 35);
-      intervals.current.push(iv);
+      }, 28);
+      intervalsRef.current.push(iv);
     }
   }, [phase]);
 
-  // Name reveal
+  // Name reveal — staggered
   useEffect(() => {
     if (phase === 7) {
       NAME_LETTERS.forEach((_, i) => {
@@ -74,80 +97,82 @@ const OpeningSignal: React.FC<OpeningSignalProps> = ({ onComplete }) => {
             n[i] = true;
             return n;
           });
-        }, i * 280 + 100);
+        }, i * 240 + 80);
       });
     }
   }, [phase]);
 
   // Heartbeat
   useEffect(() => {
-    if (phase === 8) {
-      setHeartbeatActive(true);
-    }
+    if (phase === 8) setHeartbeatActive(true);
   }, [phase]);
 
   return (
     <div
-      className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden"
+      className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden vignette"
       style={{ background: '#050816', zIndex: 100 }}
     >
       {/* CRT scanline overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px)',
+          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px)',
           zIndex: 10,
         }}
       />
 
-      {/* Nebula explosion background */}
+      {/* Nebula burst background */}
       <div className="absolute inset-0 flex items-center justify-center">
         {phase >= 6 && (
           <motion.div
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.5 }}
+            transition={{ duration: 1.8 }}
             className="relative"
           >
+            {/* Core glow */}
             <motion.div
-              className="absolute rounded-full"
+              className="absolute rounded-full pointer-events-none"
               style={{
-                width: 600,
-                height: 600,
-                background: 'radial-gradient(ellipse, rgba(155,123,255,0.08) 0%, rgba(247,215,116,0.05) 40%, transparent 70%)',
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
+                width: 700, height: 700,
+                background: 'radial-gradient(ellipse, rgba(155,123,255,0.09) 0%, rgba(247,215,116,0.05) 40%, transparent 70%)',
+                left: '50%', top: '50%', transform: 'translate(-50%, -50%)',
               }}
-              animate={{ scale: [1, 1.1, 1], rotate: [0, 5, 0] }}
-              transition={{ duration: 8, repeat: Infinity }}
+              animate={{ scale: [1, 1.08, 1], rotate: [0, 8, 0] }}
+              transition={{ duration: 10, repeat: Infinity }}
             />
-            {Array.from({ length: 40 }).map((_, i) => (
+
+            {/* Starburst particles */}
+            {Array.from({ length: 48 }).map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute rounded-full"
+                className="absolute rounded-full pointer-events-none"
                 style={{
                   width: 2 + Math.random() * 3,
                   height: 2 + Math.random() * 3,
                   background: i % 3 === 0 ? '#f7d774' : i % 3 === 1 ? '#ff7ab6' : '#9b7bff',
-                  left: '50%',
-                  top: '50%',
+                  left: '50%', top: '50%',
                 }}
                 initial={{ opacity: 0, x: 0, y: 0 }}
                 animate={{
-                  opacity: [0, 0.8, 0],
-                  x: Math.cos((i / 40) * Math.PI * 2) * (100 + Math.random() * 200),
-                  y: Math.sin((i / 40) * Math.PI * 2) * (100 + Math.random() * 200),
+                  opacity: [0, 0.9, 0],
+                  x: Math.cos((i / 48) * Math.PI * 2) * (120 + Math.random() * 220),
+                  y: Math.sin((i / 48) * Math.PI * 2) * (120 + Math.random() * 220),
                 }}
-                transition={{ duration: 2 + Math.random() * 2, delay: Math.random() * 0.5, repeat: Infinity, repeatDelay: 3 }}
+                transition={{
+                  duration: 2.2 + Math.random() * 2,
+                  delay: Math.random() * 0.4,
+                  repeat: Infinity,
+                  repeatDelay: 3.5,
+                }}
               />
             ))}
           </motion.div>
         )}
       </div>
 
-      {/* Ambient floating dust */}
-      {Array.from({ length: 25 }).map((_, i) => (
+      {/* Ambient dust particles */}
+      {Array.from({ length: 20 }).map((_, i) => (
         <motion.div
           key={i}
           className="absolute rounded-full pointer-events-none"
@@ -157,233 +182,219 @@ const OpeningSignal: React.FC<OpeningSignalProps> = ({ onComplete }) => {
             background: ['#f7d774', '#ff7ab6', '#9b7bff', '#ffffff'][Math.floor(Math.random() * 4)],
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
-            opacity: 0,
           }}
-          animate={{ opacity: [0, 0.6, 0], y: [0, -30 - Math.random() * 30, 0] }}
+          animate={{ opacity: [0, 0.5, 0], y: [0, -40 - Math.random() * 30, 0] }}
           transition={{ duration: 3 + Math.random() * 4, delay: Math.random() * 5, repeat: Infinity }}
         />
       ))}
 
       {/* Signal rings */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        {phase >= 1 && phase < 4 && (
-          <div className="relative flex items-center justify-center">
-            {[1, 2, 3, 4].map(i => (
-              <motion.div
-                key={i}
-                className="absolute rounded-full"
-                style={{ border: '1px solid rgba(155,123,255,0.4)' }}
-                initial={{ width: 0, height: 0, opacity: 0.8 }}
-                animate={{ width: i * 120, height: i * 120, opacity: 0 }}
-                transition={{ duration: 2, delay: i * 0.3, repeat: Infinity, ease: 'easeOut' }}
-              />
-            ))}
+      {phase >= 1 && phase < 4 && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          {[0, 1, 2].map(i => (
             <motion.div
-              className="rounded-full"
-              style={{ width: 12, height: 12, background: '#9b7bff', boxShadow: '0 0 20px #9b7bff' }}
-              animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
+              key={i}
+              className="absolute rounded-full"
+              style={{ border: '1px solid rgba(155,123,255,0.4)' }}
+              initial={{ width: 0, height: 0, opacity: 0.8 }}
+              animate={{ width: 400 + i * 160, height: 400 + i * 160, opacity: 0 }}
+              transition={{ duration: 3, delay: i * 1, repeat: Infinity, ease: 'easeOut' }}
             />
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {/* Transmission text */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        {phase === 2 && (
-          <motion.div
-            initial={{ opacity: 0, letterSpacing: '0.5em' }}
-            animate={{ opacity: 1, letterSpacing: '0.3em' }}
-            exit={{ opacity: 0 }}
-            className="text-center"
-          >
-            <p
-              className="font-cinzel text-sm tracking-widest"
-              style={{ color: '#9b7bff', textShadow: '0 0 20px rgba(155,123,255,0.8)' }}
-            >
-              INCOMING TRANSMISSION
-            </p>
-          </motion.div>
-        )}
-      </div>
+      {/* Content layers */}
+      <div className="relative z-20 flex flex-col items-center gap-6 px-6 max-w-xl w-full">
 
-      {/* Glitch lines */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        {phase === 3 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full">
-            {Array.from({ length: 10 }).map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute"
-                style={{
-                  top: `${10 + i * 8}%`,
-                  left: `${Math.random() * 40}%`,
-                  width: `${20 + Math.random() * 40}%`,
-                  height: 1,
-                  background: `rgba(155,123,255,${0.1 + Math.random() * 0.4})`,
-                }}
-                animate={{ opacity: [0, 1, 0], x: [0, 10, 0] }}
-                transition={{ duration: 0.3, delay: i * 0.1, repeat: Infinity }}
-              />
-            ))}
+        {/* Phase 1: Signal origin */}
+        <AnimatePresence>
+          {phase >= 1 && phase <= 3 && (
             <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
               className="text-center"
-              animate={{ opacity: [0, 1, 0, 1, 0, 1] }}
-              transition={{ duration: 0.8, repeat: 3 }}
             >
-              <p className="font-cinzel text-xs tracking-widest" style={{ color: '#ff7ab6' }}>DECODING...</p>
+              <p className="font-cinzel text-xs tracking-widest" style={{ color: '#9b7bff', letterSpacing: '0.3em' }}>
+                INCOMING TRANSMISSION
+              </p>
+              <motion.div
+                className="mt-3 w-12 h-px mx-auto"
+                style={{ background: 'linear-gradient(to right, transparent, #9b7bff, transparent)' }}
+                animate={{ scaleX: [0, 1, 0.8, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
             </motion.div>
-          </motion.div>
-        )}
-      </div>
+          )}
+        </AnimatePresence>
 
-      {/* Main content area */}
-      <div className="relative z-10 text-center px-4 flex flex-col items-center gap-6">
-        {/* SIGNAL DETECTED */}
-        <div className="h-8">
-          {phase >= 4 && (
-            <motion.p
+        {/* Phase 2: Signal source */}
+        <AnimatePresence>
+          {phase >= 2 && phase <= 4 && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              className="font-cormorant text-center text-gray-400 italic"
+              style={{ fontSize: '1.1rem', lineHeight: '1.8' }}
+            >
+              Somewhere across space and time,<br />
+              a message is finding its way to you.
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Phase 3: Loading indicator */}
+        <AnimatePresence>
+          {phase === 3 && (
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="font-cinzel text-sm tracking-widest"
-              style={{ color: '#f7d774', textShadow: '0 0 10px rgba(247,215,116,0.6)' }}
+              exit={{ opacity: 0 }}
+              className="flex gap-1.5"
+            >
+              {[0, 1, 2, 3, 4].map(i => (
+                <motion.div
+                  key={i}
+                  className="rounded-full"
+                  style={{ width: 4, height: 4, background: '#9b7bff' }}
+                  animate={{ opacity: [0.2, 1, 0.2] }}
+                  transition={{ duration: 1, delay: i * 0.15, repeat: Infinity }}
+                />
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Phase 4: Signal header */}
+        <AnimatePresence>
+          {phase >= 4 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center font-cinzel"
+              style={{ color: '#f7d774', letterSpacing: '0.25em', fontSize: '0.85rem' }}
             >
               {text1}
-            </motion.p>
+              {phase === 4 && text1.length < '— SIGNAL DETECTED —'.length && (
+                <span className="opacity-70">|</span>
+              )}
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
 
-        {/* Source / Distance */}
-        <div className="h-12">
+        {/* Phase 5: Signal details */}
+        <AnimatePresence>
           {phase >= 5 && (
-            <motion.p
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="glass rounded-2xl p-4 text-left w-full max-w-xs"
+              style={{ borderColor: 'rgba(155,123,255,0.3)' }}
+            >
+              {text2.split('\n').map((line, i) => (
+                <p key={i} className="font-cormorant text-sm text-gray-300 italic leading-relaxed">
+                  {line}
+                </p>
+              ))}
+              {phase === 5 && (
+                <span className="opacity-70 text-yellow-300">|</span>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Phase 7: Name reveal */}
+        <AnimatePresence>
+          {phase >= 7 && (
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="font-cormorant text-base text-gray-400 italic whitespace-pre-line leading-relaxed"
+              className="flex gap-1 md:gap-2"
             >
-              {text2}
-            </motion.p>
-          )}
-        </div>
-
-        {/* Name assembly */}
-        <div className="min-h-32">
-          {phase >= 7 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-4">
-              <div className="flex items-center gap-1 md:gap-2">
-                {NAME_LETTERS.map((letter, i) => (
-                  <div key={i} className="relative" style={{ width: 48, height: 72, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {revealedLetters[i] && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20, scale: 0.5 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                      >
-                        <span
-                          className="font-cinzel font-bold"
-                          style={{
-                            fontSize: '2.5rem',
-                            color: '#f7d774',
-                            textShadow: '0 0 30px rgba(247,215,116,0.8), 0 0 60px rgba(247,215,116,0.4)',
-                          }}
-                        >
-                          {letter}
-                        </span>
-                        {/* Letter particle */}
-                        <motion.div
-                          className="absolute inset-0 rounded-full pointer-events-none"
-                          style={{ background: 'radial-gradient(circle, rgba(247,215,116,0.2), transparent)' }}
-                          animate={{ scale: [0, 2], opacity: [0.8, 0] }}
-                          transition={{ duration: 0.6 }}
-                        />
-                      </motion.div>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {/* Dots */}
-              <div className="flex gap-2">
-                {revealedLetters[6] && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="flex gap-1.5"
-                  >
-                    {NAME_LETTERS.map((_, i) => (
-                      <motion.div
-                        key={i}
-                        className="rounded-full"
-                        style={{ width: 4, height: 4, background: '#f7d774' }}
-                        animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.2, 0.8] }}
-                        transition={{ duration: 2, delay: i * 0.15, repeat: Infinity }}
-                      />
-                    ))}
-                  </motion.div>
-                )}
-              </div>
+              {NAME_LETTERS.map((letter, i) => (
+                <motion.span
+                  key={i}
+                  className="font-cinzel font-bold"
+                  style={{
+                    fontSize: 'clamp(2.5rem, 8vw, 4.5rem)',
+                    color: revealedLetters[i] ? '#f7d774' : 'transparent',
+                    textShadow: revealedLetters[i] ? '0 0 40px rgba(247,215,116,0.7), 0 0 80px rgba(247,215,116,0.3)' : 'none',
+                    transition: 'color 0.3s ease, text-shadow 0.5s ease',
+                    WebkitTextStroke: revealedLetters[i] ? '0px' : '1px rgba(155,123,255,0.3)',
+                  }}
+                >
+                  {letter}
+                </motion.span>
+              ))}
             </motion.div>
           )}
-        </div>
+        </AnimatePresence>
 
-        {/* Heartbeat */}
-        <div className="h-16 flex items-center justify-center">
-          {phase >= 8 && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              <motion.span
-                className="text-4xl"
-                animate={heartbeatActive ? {
-                  scale: [1, 1.4, 1, 1.2, 1],
-                } : {}}
-                transition={{ duration: 0.8, repeat: Infinity, repeatDelay: 0.5 }}
+        {/* Phase 8: Heartbeat subtitle */}
+        <AnimatePresence>
+          {heartbeatActive && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center"
+            >
+              <p className="font-cormorant text-xl italic text-gray-300">
+                A universe built for you.
+              </p>
+              <motion.div
+                className="mt-2 text-2xl"
+                animate={heartbeatActive ? { scale: [1, 1.3, 1, 1.2, 1] } : {}}
+                transition={{ duration: 1.4, repeat: Infinity }}
               >
-                💛
-              </motion.span>
+                ♥
+              </motion.div>
             </motion.div>
           )}
-        </div>
+        </AnimatePresence>
 
-        {/* CTA — No skip button, just enter button */}
-        <div className="h-20 flex items-center justify-center">
+        {/* Phase 9: Enter button */}
+        <AnimatePresence>
           {phase >= 9 && (
             <motion.button
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-              onClick={onComplete}
-              className="relative px-8 py-4 rounded-full font-cinzel text-sm tracking-widest overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={complete}
+              className="font-cinzel tracking-widest px-10 py-4 rounded-full text-sm relative overflow-hidden group"
               style={{
                 background: 'linear-gradient(135deg, rgba(247,215,116,0.15), rgba(155,123,255,0.15))',
                 border: '1px solid rgba(247,215,116,0.4)',
                 color: '#f7d774',
-                boxShadow: '0 0 30px rgba(247,215,116,0.1)',
               }}
-              whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(247,215,116,0.3)' }}
+              whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
-              I'm ready to feel everything
-              {/* Shimmer */}
               <motion.div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
-                  translateX: '-100%',
-                }}
-                animate={{ translateX: ['−100%', '200%'] }}
-                transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ background: 'linear-gradient(135deg, rgba(247,215,116,0.1), rgba(155,123,255,0.1))' }}
               />
-              {/* Pulse ring */}
-              <motion.div
-                className="absolute inset-0 rounded-full pointer-events-none"
-                style={{ border: '1px solid rgba(247,215,116,0.3)' }}
-                animate={{ scale: [1, 1.05, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
+              <span className="relative z-10">✦ ENTER THE UNIVERSE ✦</span>
             </motion.button>
           )}
-        </div>
+        </AnimatePresence>
       </div>
+
+      {/* Skip button */}
+      <AnimatePresence>
+        {showSkip && phase < 9 && (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.5 }}
+            exit={{ opacity: 0 }}
+            onClick={complete}
+            className="fixed bottom-6 right-6 font-cinzel text-xs text-gray-600 hover:text-gray-400 transition-colors z-30"
+            style={{ fontSize: 10, letterSpacing: '0.1em' }}
+          >
+            skip →
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
