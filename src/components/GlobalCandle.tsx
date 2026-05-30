@@ -1,17 +1,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useAppContext } from '../contexts/AppContext';
+import { useApp } from '../contexts/AppContext';
 
 const GlobalCandle: React.FC = () => {
-  const { candleCarried } = useAppContext();
+  const { candleCarried } = useApp();
   if (!candleCarried) return null;
 
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      className="fixed bottom-6 right-6 z-50 flex flex-col items-center pointer-events-none"
+      exit={{ opacity: 0, scale: 0 }}
+      className="fixed bottom-6 left-6 z-50 flex flex-col items-center pointer-events-none"
       style={{ filter: 'drop-shadow(0 0 12px rgba(247,215,116,0.6))' }}
+      aria-hidden="true"
     >
       {/* Flame */}
       <motion.div
@@ -23,7 +25,7 @@ const GlobalCandle: React.FC = () => {
           marginBottom: 1,
         }}
         animate={{
-          scaleX: [1, 0.8, 1.1, 0.9, 1],
+          scaleX: [1, 0.85, 1.1, 0.9, 1],
           scaleY: [1, 1.1, 0.95, 1.05, 1],
           rotate: [-2, 2, -1, 3, -2],
         }}
@@ -52,7 +54,7 @@ const GlobalCandle: React.FC = () => {
       />
       <span
         className="font-cinzel mt-1"
-        style={{ fontSize: '7px', color: '#f7d774', letterSpacing: '0.05em', opacity: 0.8 }}
+        style={{ fontSize: 7, color: '#f7d774', letterSpacing: '0.05em', opacity: 0.8 }}
       >
         flame
       </span>
