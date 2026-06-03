@@ -34,7 +34,6 @@ const PlanetVoid: React.FC = () => {
 
   const nextConfession = () => {
     if (isTyping) {
-      // Skip typing — show full text
       if (intervalRef.current) clearInterval(intervalRef.current);
       setTypewriterText(currentText);
       setIsTyping(false);
@@ -55,30 +54,17 @@ const PlanetVoid: React.FC = () => {
         <p className="font-cormorant text-lg text-gray-400 mt-2 italic">The space between stars — where I keep the truest things</p>
       </motion.div>
 
-      {/* Confession display */}
-      <motion.div
-        className="w-full max-w-md relative"
-        onClick={nextConfession}
-      >
+      <motion.div className="w-full max-w-md relative" onClick={nextConfession}>
         <div
           className="glass rounded-3xl p-8 text-center cursor-pointer relative overflow-hidden"
-          style={{
-            border: '1px solid rgba(136,136,170,0.25)',
-            minHeight: 160,
-          }}
+          style={{ border: '1px solid rgba(136,136,170,0.25)', minHeight: 160 }}
         >
-          {/* Ambient glow */}
           <div
             className="absolute inset-0 pointer-events-none"
-            style={{
-              background: `radial-gradient(ellipse at center, rgba(136,136,170,${0.04 + klickCount * 0.005}) 0%, transparent 70%)`,
-            }}
+            style={{ background: `radial-gradient(ellipse at center, rgba(136,136,170,${0.04 + klickCount * 0.005}) 0%, transparent 70%)` }}
           />
 
-          <p
-            className="font-cormorant text-xl italic leading-relaxed relative z-10"
-            style={{ color: '#c0c0d8' }}
-          >
+          <p className="font-cormorant text-xl italic leading-relaxed relative z-10" style={{ color: '#c0c0d8' }}>
             {typewriterText}
             {isTyping && <span className="opacity-70" style={{ color: '#8888aa' }}>|</span>}
           </p>
@@ -95,23 +81,18 @@ const PlanetVoid: React.FC = () => {
             </motion.p>
           )}
 
-          {/* Confession counter */}
           <div className="absolute top-3 right-3 flex gap-1">
             {VOID_CONFESSIONS.map((_, i) => (
               <div
                 key={i}
                 className="rounded-full transition-all duration-300"
-                style={{
-                  width: 5, height: 5,
-                  background: i === localIndex ? '#8888aa' : 'rgba(136,136,170,0.2)',
-                }}
+                style={{ width: 5, height: 5, background: i === localIndex ? '#8888aa' : 'rgba(136,136,170,0.2)' }}
               />
             ))}
           </div>
         </div>
       </motion.div>
 
-      {/* Depth layer */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -125,7 +106,6 @@ const PlanetVoid: React.FC = () => {
         </p>
       </motion.div>
 
-      {/* Easter egg — after cycling through all */}
       <AnimatePresence>
         {klickCount >= VOID_CONFESSIONS.length && (
           <motion.div
