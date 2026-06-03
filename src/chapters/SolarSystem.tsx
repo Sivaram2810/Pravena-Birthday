@@ -3,10 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../contexts/AppContext';
 import { PLANETS, UNIVERSE_NAME } from '../data/content';
 
-// Orbit radii with comfortable spacing
-const ORBIT_RADII = [130, 195, 265, 340, 415, 490];
+// Normalized orbit radii - good spacing
+const ORBIT_RADII = [115, 170, 228, 290, 356, 422];
 
-// Sun photo
 const SUN_PHOTO = 'https://i.postimg.cc/k5B5K2LB/Whats-App-Image-2026-05-28-at-7-15-28-AM.jpg';
 
 // Desktop orbital planet
@@ -23,18 +22,20 @@ const OrbitalPlanet: React.FC<{
   const animIdRef = useRef<number>(0);
 
   useEffect(() => {
-    const speed = (2 * Math.PI) / (planet.speed * 60);
+    // Uniform base speed — all planets move at similar pace
+    const basePeriod = 50; // seconds per revolution (normalized)
+    const speed = (2 * Math.PI) / (basePeriod * 60);
 
     const animate = () => {
       angleRef.current += speed;
       const x = Math.cos(angleRef.current) * orbitRadius;
-      const y = Math.sin(angleRef.current) * orbitRadius * 0.42;
+      const y = Math.sin(angleRef.current) * orbitRadius * 0.38;
       setPos({ x, y });
       animIdRef.current = requestAnimationFrame(animate);
     };
     animIdRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animIdRef.current);
-  }, [orbitRadius, planet.speed]);
+  }, [orbitRadius]);
 
   return (
     <div
@@ -57,11 +58,11 @@ const OrbitalPlanet: React.FC<{
             height: planet.size,
             background: `radial-gradient(circle at 35% 35%, ${planet.color}ee, ${planet.color}44)`,
             boxShadow: hovered
-              ? `0 0 30px ${planet.color}cc, 0 0 60px ${planet.color}44, inset 0 0 20px rgba(255,255,255,0.12)`
+              ? `0 0 28px ${planet.color}cc, 0 0 55px ${planet.color}44, inset 0 0 18px rgba(255,255,255,0.12)`
               : visited
-                ? `0 0 16px ${planet.color}88, 0 0 30px ${planet.color}33, inset 0 0 10px rgba(255,255,255,0.05)`
-                : `0 0 10px ${planet.color}55, inset 0 0 8px rgba(255,255,255,0.04)`,
-            border: `1px solid ${planet.color}${visited ? 'aa' : '66'}`,
+                ? `0 0 14px ${planet.color}88, 0 0 28px ${planet.color}33`
+                : `0 0 8px ${planet.color}55`,
+            border: `1px solid ${planet.color}${visited ? 'aa' : '55'}`,
             transition: 'box-shadow 0.3s ease',
           }}
           whileHover={{ scale: 1.35 }}
@@ -69,15 +70,13 @@ const OrbitalPlanet: React.FC<{
         >
           <span style={{ fontSize: planet.size * 0.42 }}>{planet.emoji}</span>
 
-          {/* Atmosphere ring */}
           <motion.div
             className="absolute rounded-full pointer-events-none"
             style={{ inset: -4, border: `1px solid ${planet.color}33`, borderRadius: '50%' }}
             animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.7, 0.3] }}
-            transition={{ duration: 2 + Math.random(), repeat: Infinity }}
+            transition={{ duration: 2.5, repeat: Infinity }}
           />
 
-          {/* Visited indicator */}
           {visited && (
             <div
               className="absolute rounded-full pointer-events-none"
@@ -91,7 +90,6 @@ const OrbitalPlanet: React.FC<{
           )}
         </motion.button>
 
-        {/* Hover label */}
         <AnimatePresence>
           {hovered && (
             <motion.div
@@ -99,12 +97,12 @@ const OrbitalPlanet: React.FC<{
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.8 }}
               className="absolute top-full mt-2 pointer-events-none z-50"
-              style={{ minWidth: '120px' }}
+              style={{ minWidth: '130px' }}
             >
               <div
                 className="px-3 py-2 rounded-xl text-center"
                 style={{
-                  background: 'rgba(5,8,22,0.95)',
+                  background: 'rgba(5,8,22,0.97)',
                   border: `1px solid ${planet.color}55`,
                   boxShadow: `0 0 20px ${planet.color}22`,
                   backdropFilter: 'blur(12px)',
@@ -117,7 +115,7 @@ const OrbitalPlanet: React.FC<{
                   {planet.description}
                 </p>
                 {visited && (
-                  <p className="font-cinzel text-xs mt-1" style={{ color: planet.color, fontSize: 8, opacity: 0.7 }}>
+                  <p className="font-cinzel mt-0.5" style={{ color: planet.color, fontSize: 8, opacity: 0.7 }}>
                     ✓ visited
                   </p>
                 )}
@@ -145,21 +143,17 @@ const MobilePlanetCard: React.FC<{
     className="flex flex-col items-center gap-1.5 p-3 rounded-2xl relative overflow-hidden"
     style={{
       background: `linear-gradient(135deg, ${planet.color}18, ${planet.color}08)`,
-      border: `1px solid ${planet.color}${visited ? '55' : '33'}`,
+      border: `1px solid ${planet.color}${visited ? '55' : '28'}`,
     }}
     whileHover={{ scale: 1.04 }}
     whileTap={{ scale: 0.95 }}
   >
-    <div
-      className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity rounded-2xl"
-      style={{ background: `radial-gradient(circle at center, ${planet.color}22, transparent 70%)` }}
-    />
-    <span className="text-2xl relative z-10" style={{ filter: visited ? 'none' : 'brightness(0.7)' }}>
+    <span className="text-2xl relative z-10" style={{ filter: visited ? 'none' : 'brightness(0.65)' }}>
       {planet.emoji}
     </span>
     <span
       className="font-cinzel relative z-10 text-center"
-      style={{ color: planet.color, fontSize: '9px', letterSpacing: '0.05em' }}
+      style={{ color: planet.color, fontSize: '8px', letterSpacing: '0.05em' }}
     >
       {planet.label}
     </span>
@@ -172,7 +166,6 @@ const MobilePlanetCard: React.FC<{
   </motion.button>
 );
 
-// SolarSystem main
 interface SolarSystemProps {
   onPlanetSelect: (id: string) => void;
 }
@@ -189,7 +182,6 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ onPlanetSelect }) => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Sun pulsing glow
   useEffect(() => {
     const iv = setInterval(() => {
       setSunGlow(prev => prev === 1 ? 1.06 : 1);
@@ -197,17 +189,16 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ onPlanetSelect }) => {
     return () => clearInterval(iv);
   }, []);
 
-  // Hide welcome after 4s
   useEffect(() => {
-    const t = setTimeout(() => setShowWelcome(false), 4500);
+    const t = setTimeout(() => setShowWelcome(false), 4000);
     return () => clearTimeout(t);
   }, []);
 
-  // Assign orbits
+  // Spread planets evenly across orbits
   const planetOrbits = PLANETS.map((planet, i) => ({
     ...planet,
     orbitRadius: ORBIT_RADII[planet.orbitIndex % ORBIT_RADII.length],
-    startAngle: (i / PLANETS.length) * Math.PI * 2 + (i * 0.7),
+    startAngle: (i / PLANETS.length) * Math.PI * 2 + i * 0.5,
   }));
 
   return (
@@ -219,18 +210,13 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ onPlanetSelect }) => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-20 left-0 right-0 flex justify-center z-40 pointer-events-none px-4"
+            className="absolute top-6 left-0 right-0 flex justify-center z-50 pointer-events-none"
           >
             <div
-              className="glass rounded-2xl px-6 py-3 text-center"
-              style={{ borderColor: 'rgba(247,215,116,0.2)' }}
+              className="px-6 py-3 rounded-full font-cormorant text-base italic text-gray-300"
+              style={{ background: 'rgba(5,8,22,0.85)', border: '1px solid rgba(247,215,116,0.2)', backdropFilter: 'blur(12px)' }}
             >
-              <p className="font-cinzel text-sm" style={{ color: '#f7d774', letterSpacing: '0.1em' }}>
-                ✦ {UNIVERSE_NAME}'s Universe ✦
-              </p>
-              <p className="font-cormorant text-xs text-gray-400 italic mt-0.5">
-                {isMobile ? 'Tap any world to explore' : 'Click any world to explore'}
-              </p>
+              Welcome to your universe, {UNIVERSE_NAME} ✦
             </div>
           </motion.div>
         )}
@@ -240,50 +226,55 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ onPlanetSelect }) => {
       <AnimatePresence>
         {universeComplete && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="fixed top-20 left-0 right-0 flex justify-center z-40 pointer-events-none px-4"
+            className="absolute bottom-20 left-0 right-0 flex justify-center z-50 pointer-events-none"
           >
             <div
-              className="glass rounded-2xl px-6 py-3 text-center"
-              style={{ border: '1px solid rgba(247,215,116,0.4)', boxShadow: '0 0 30px rgba(247,215,116,0.1)' }}
+              className="px-6 py-3 rounded-full font-cinzel text-xs tracking-widest"
+              style={{ background: 'rgba(247,215,116,0.12)', border: '1px solid rgba(247,215,116,0.4)', color: '#f7d774', backdropFilter: 'blur(12px)' }}
             >
-              <p className="font-cinzel text-sm" style={{ color: '#f7d774' }}>
-                ✨ Universe Complete — Thank you for exploring every world
-              </p>
+              ✦ Universe Complete — Every World Explored ✦
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {isMobile ? (
-        /* ─── MOBILE GRID ─── */
-        <div className="w-full px-4 py-20">
-          {/* Sun card */}
+        /* ── Mobile layout ── */
+        <div className="w-full px-4 py-8 flex flex-col items-center gap-6">
+          {/* Sun / portrait */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center mb-8"
+            animate={{ opacity: 1, scale: sunGlow }}
+            transition={{ duration: 2, ease: 'easeInOut' }}
+            className="relative flex-shrink-0"
+            style={{ zIndex: 20 }}
           >
             <div
-              className="rounded-full overflow-hidden"
+              className="w-24 h-24 rounded-full overflow-hidden"
               style={{
-                width: 90, height: 90,
-                boxShadow: '0 0 30px rgba(247,215,116,0.6), 0 0 80px rgba(247,215,116,0.2)',
+                boxShadow: '0 0 40px rgba(247,215,116,0.5), 0 0 80px rgba(247,215,116,0.2)',
                 border: '2px solid rgba(247,215,116,0.5)',
               }}
             >
-              <img src={SUN_PHOTO} alt={UNIVERSE_NAME} className="w-full h-full object-cover" />
+              <img src={SUN_PHOTO} alt="Pravena" className="w-full h-full object-cover" />
             </div>
-            <p className="font-cinzel text-sm mt-2 glow-gold" style={{ color: '#f7d774', letterSpacing: '0.2em' }}>
-              {UNIVERSE_NAME.toUpperCase()}
-            </p>
-            <p className="font-cormorant text-xs text-gray-500 italic">The center of this universe</p>
+            <motion.div
+              className="absolute inset-0 rounded-full pointer-events-none"
+              style={{ border: '1px solid rgba(247,215,116,0.2)' }}
+              animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            />
+            {/* Name - always visible on mobile */}
+            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
+              <p className="font-cinzel text-xs font-bold" style={{ color: '#f7d774', fontSize: 11, letterSpacing: '0.15em' }}>
+                {UNIVERSE_NAME.toUpperCase()}
+              </p>
+            </div>
           </motion.div>
 
-          {/* Planet grid */}
-          <div className="grid grid-cols-4 gap-2 max-w-sm mx-auto">
+          <div className="mt-6 grid grid-cols-4 gap-2 w-full max-w-sm">
             {PLANETS.map((planet, i) => (
               <MobilePlanetCard
                 key={planet.id}
@@ -296,54 +287,100 @@ const SolarSystem: React.FC<SolarSystemProps> = ({ onPlanetSelect }) => {
           </div>
         </div>
       ) : (
-        /* ─── DESKTOP ORBITAL ─── */
+        /* ── Desktop orbital layout ── */
         <div
           className="relative flex items-center justify-center"
           style={{ width: '100vw', height: '100vh' }}
         >
-          {/* Orbit rings */}
-          {ORBIT_RADII.map((r, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full pointer-events-none"
-              style={{
-                width: r * 2,
-                height: r * 2 * 0.42,
-                border: `1px solid rgba(255,255,255,${0.03 + i * 0.005})`,
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
-              }}
-            />
-          ))}
+          {/* SVG orbit rings - clearly visible faint glowing lines */}
+          <svg
+            className="absolute inset-0 pointer-events-none"
+            style={{ width: '100%', height: '100%', zIndex: 1 }}
+          >
+            {ORBIT_RADII.map((r, i) => {
+              const rx = r;
+              const ry = r * 0.38;
+              const colors = ['#f7d774', '#ff7ab6', '#9b7bff', '#7be3ff', '#a8d8ea', '#8888aa'];
+              return (
+                <ellipse
+                  key={i}
+                  cx="50%"
+                  cy="50%"
+                  rx={rx}
+                  ry={ry}
+                  fill="none"
+                  stroke={colors[i % colors.length]}
+                  strokeWidth="0.7"
+                  strokeOpacity="0.22"
+                  strokeDasharray="4 6"
+                />
+              );
+            })}
+          </svg>
 
-          {/* Sun center */}
+          {/* Sun / Central portrait - highest z-index to stay foreground */}
           <motion.div
-            className="absolute z-20 flex flex-col items-center"
-            style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
-            animate={{ scale: [sunGlow, 1, sunGlow] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute flex flex-col items-center gap-2"
+            style={{
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 50,
+            }}
+            animate={{ scale: sunGlow }}
+            transition={{ duration: 2, ease: 'easeInOut' }}
           >
             <div
               className="rounded-full overflow-hidden"
               style={{
-                width: 80, height: 80,
-                boxShadow: '0 0 40px rgba(247,215,116,0.7), 0 0 100px rgba(247,215,116,0.25), 0 0 200px rgba(247,215,116,0.08)',
-                border: '2px solid rgba(247,215,116,0.5)',
+                width: 96,
+                height: 96,
+                boxShadow: '0 0 60px rgba(247,215,116,0.6), 0 0 120px rgba(247,215,116,0.25)',
+                border: '2px solid rgba(247,215,116,0.6)',
               }}
             >
-              <img src={SUN_PHOTO} alt={UNIVERSE_NAME} className="w-full h-full object-cover" />
+              <img src={SUN_PHOTO} alt="Pravena" className="w-full h-full object-cover" />
             </div>
-            <p
-              className="font-cinzel text-xs mt-2 tracking-widest"
-              style={{ color: '#f7d774', textShadow: '0 0 20px rgba(247,215,116,0.8)', letterSpacing: '0.25em' }}
+
+            {/* Glow rings around sun */}
+            {[1.4, 1.7, 2.0].map((scale, i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full pointer-events-none"
+                style={{
+                  width: 96 * scale,
+                  height: 96 * scale,
+                  border: `1px solid rgba(247,215,116,${0.15 - i * 0.04})`,
+                  borderRadius: '50%',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                }}
+                animate={{ scale: [1, 1.05, 1], opacity: [0.6, 0.3, 0.6] }}
+                transition={{ duration: 3 + i, repeat: Infinity }}
+              />
+            ))}
+
+            {/* Name label - always foreground */}
+            <div
+              className="rounded-full px-4 py-1 mt-1"
+              style={{
+                background: 'rgba(5,8,22,0.9)',
+                border: '1px solid rgba(247,215,116,0.3)',
+                backdropFilter: 'blur(8px)',
+              }}
             >
-              {UNIVERSE_NAME.toUpperCase()}
-            </p>
+              <p
+                className="font-cinzel text-xs font-bold"
+                style={{ color: '#f7d774', letterSpacing: '0.2em', fontSize: 11 }}
+              >
+                {UNIVERSE_NAME.toUpperCase()}
+              </p>
+            </div>
           </motion.div>
 
-          {/* Planets */}
-          {planetOrbits.map(planet => (
+          {/* Orbital planets — z-index kept below sun */}
+          {planetOrbits.map((planet) => (
             <OrbitalPlanet
               key={planet.id}
               planet={planet}
