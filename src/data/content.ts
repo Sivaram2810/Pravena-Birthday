@@ -7,6 +7,8 @@ export const UNIVERSE_NAME = 'Pravena';
 export const SENDER_NAME = 'Sivaram';
 export const BIRTHDAY_DATE = 'June 4, 2025';
 export const RELATIONSHIP_START = 'December 19, 2022';
+// Anniversary date for countdown/countup
+export const ANNIVERSARY_DATE = new Date('2022-12-19T05:30:00');
 
 // ─── Music ──────────────────────────────────────────
 export const MUSIC_TRACK = {
@@ -20,7 +22,7 @@ export const HER_PHOTOS = [
   {
     id: 'her-1',
     url: 'https://i.postimg.cc/k5B5K2LB/Whats-App-Image-2026-05-28-at-7-15-28-AM.jpg',
-    caption: 'The smile that rewrote gravity',
+    caption: 'The smile that rewrote the laws of gravity — one look and I was yours forever',
     label: 'Golden Hour',
     special: true,
     color: '#f7d774',
@@ -28,7 +30,7 @@ export const HER_PHOTOS = [
   {
     id: 'her-2',
     url: 'https://i.postimg.cc/k5B5K2LB/Whats-App-Image-2026-05-28-at-7-15-28-AM.jpg',
-    caption: 'Eyes that hold entire constellations',
+    caption: 'Eyes that hold entire constellations — I could get lost in them for centuries',
     label: 'Starlight',
     special: false,
     color: '#9b7bff',
@@ -36,7 +38,7 @@ export const HER_PHOTOS = [
   {
     id: 'her-3',
     url: 'https://i.postimg.cc/k5B5K2LB/Whats-App-Image-2026-05-28-at-7-15-28-AM.jpg',
-    caption: 'Every frame is a universe',
+    caption: 'Every frame of you is a universe waiting to be explored with wonder',
     label: 'Nebula',
     special: false,
     color: '#ff7ab6',
@@ -44,10 +46,34 @@ export const HER_PHOTOS = [
   {
     id: 'her-4',
     url: 'https://i.postimg.cc/k5B5K2LB/Whats-App-Image-2026-05-28-at-7-15-28-AM.jpg',
-    caption: 'Still the most beautiful thing I have ever seen',
+    caption: 'Still the most beautiful thing I have ever had the privilege of seeing',
     label: 'Eclipse',
     special: true,
     color: '#f7d774',
+  },
+  {
+    id: 'her-5',
+    url: 'https://i.postimg.cc/k5B5K2LB/Whats-App-Image-2026-05-28-at-7-15-28-AM.jpg',
+    caption: 'Even in silence, your presence fills the entire room with warmth and light',
+    label: 'Aurora',
+    special: false,
+    color: '#7be3ff',
+  },
+  {
+    id: 'her-6',
+    url: 'https://i.postimg.cc/k5B5K2LB/Whats-App-Image-2026-05-28-at-7-15-28-AM.jpg',
+    caption: 'This moment — frozen in time, held forever in the chambers of my heart',
+    label: 'Solstice',
+    special: true,
+    color: '#ffe4a0',
+  },
+  {
+    id: 'her-7',
+    url: 'https://i.postimg.cc/k5B5K2LB/Whats-App-Image-2026-05-28-at-7-15-28-AM.jpg',
+    caption: 'My favorite kind of magic — the ordinary way you exist and take my breath away',
+    label: 'Infinity',
+    special: true,
+    color: '#e0c3ff',
   },
 ];
 
@@ -55,7 +81,7 @@ export const OUR_PHOTOS = [
   {
     id: 'us-1',
     url: 'https://i.postimg.cc/k5B5K2LB/Whats-App-Image-2026-05-28-at-7-15-28-AM.jpg',
-    caption: 'The beginning of everything — our first date',
+    caption: 'The beginning of everything — our first chapter written in gold and starlight',
     label: 'Origin',
     special: true,
     color: '#f7d774',
@@ -63,7 +89,7 @@ export const OUR_PHOTOS = [
   {
     id: 'us-2',
     url: 'https://i.postimg.cc/k5B5K2LB/Whats-App-Image-2026-05-28-at-7-15-28-AM.jpg',
-    caption: 'Her birthday. A perfect little day.',
+    caption: 'Your birthday. The day the universe decided to gift itself to me through you.',
     label: 'Bloom',
     special: true,
     color: '#ff7ab6',
@@ -71,10 +97,18 @@ export const OUR_PHOTOS = [
   {
     id: 'us-3',
     url: 'https://i.postimg.cc/k5B5K2LB/Whats-App-Image-2026-05-28-at-7-15-28-AM.jpg',
-    caption: 'My birthday. Our last meetup. I hold this one forever.',
+    caption: 'My birthday with you — the greatest gift has always been your presence beside me',
     label: 'Eternal',
     special: true,
     color: '#9b7bff',
+  },
+  {
+    id: 'us-4',
+    url: 'https://i.postimg.cc/k5B5K2LB/Whats-App-Image-2026-05-28-at-7-15-28-AM.jpg',
+    caption: 'Two hearts, one universe — every memory we create is a star in our shared sky',
+    label: 'Cosmos',
+    special: true,
+    color: '#7be3ff',
   },
 ];
 
@@ -87,7 +121,7 @@ export const PLANETS = [
     description: 'The map of every moment',
     color: '#f7d774',
     size: 52,
-    speed: 38,
+    speed: 40,
     orbitIndex: 0,
     unlocked: true,
     visitCount: 0,
@@ -100,7 +134,7 @@ export const PLANETS = [
     description: 'Gallery of you and us',
     color: '#ff7ab6',
     size: 44,
-    speed: 45,
+    speed: 40,
     orbitIndex: 1,
     unlocked: true,
     visitCount: 0,
@@ -113,7 +147,7 @@ export const PLANETS = [
     description: 'Things only we understand',
     color: '#9b7bff',
     size: 48,
-    speed: 52,
+    speed: 40,
     orbitIndex: 2,
     unlocked: true,
     visitCount: 0,
@@ -126,7 +160,7 @@ export const PLANETS = [
     description: 'Words that changed everything',
     color: '#7be3ff',
     size: 40,
-    speed: 60,
+    speed: 40,
     orbitIndex: 3,
     unlocked: true,
     visitCount: 0,
@@ -139,7 +173,7 @@ export const PLANETS = [
     description: 'The pull between two hearts',
     color: '#74c7f7',
     size: 44,
-    speed: 42,
+    speed: 40,
     orbitIndex: 1,
     unlocked: true,
     visitCount: 0,
@@ -152,7 +186,7 @@ export const PLANETS = [
     description: 'See yourself through my eyes',
     color: '#e0c3ff',
     size: 40,
-    speed: 58,
+    speed: 40,
     orbitIndex: 2,
     unlocked: true,
     visitCount: 0,
@@ -165,7 +199,7 @@ export const PLANETS = [
     description: 'Promises written in starlight',
     color: '#ffe4a0',
     size: 44,
-    speed: 35,
+    speed: 40,
     orbitIndex: 3,
     unlocked: true,
     visitCount: 0,
@@ -178,7 +212,7 @@ export const PLANETS = [
     description: 'Messages across time and space',
     color: '#ffb3d9',
     size: 40,
-    speed: 65,
+    speed: 40,
     orbitIndex: 0,
     unlocked: true,
     visitCount: 0,
@@ -191,7 +225,7 @@ export const PLANETS = [
     description: 'Little notes, infinite meaning',
     color: '#a8d8ea',
     size: 36,
-    speed: 55,
+    speed: 40,
     orbitIndex: 4,
     unlocked: true,
     visitCount: 0,
@@ -204,7 +238,7 @@ export const PLANETS = [
     description: 'The space between stars',
     color: '#8888aa',
     size: 38,
-    speed: 70,
+    speed: 40,
     orbitIndex: 5,
     unlocked: true,
     visitCount: 0,
@@ -217,7 +251,7 @@ export const PLANETS = [
     description: 'Where joy lives forever',
     color: '#b4f7a0',
     size: 42,
-    speed: 48,
+    speed: 40,
     orbitIndex: 4,
     unlocked: true,
     visitCount: 0,
@@ -230,7 +264,7 @@ export const PLANETS = [
     description: 'The place without an end',
     color: '#ffd6b0',
     size: 50,
-    speed: 28,
+    speed: 40,
     orbitIndex: 5,
     unlocked: true,
     visitCount: 0,
@@ -243,11 +277,38 @@ export const PLANETS = [
     description: 'Letters written across universes',
     color: '#d4b8ff',
     size: 38,
-    speed: 62,
+    speed: 40,
     orbitIndex: 3,
     unlocked: true,
     visitCount: 0,
     secretRevealAt: 2,
+  },
+  // Missing planets added
+  {
+    id: 'vault',
+    label: 'VAULT',
+    emoji: '🔐',
+    description: 'Secrets locked in the dark',
+    color: '#cc4444',
+    size: 42,
+    speed: 40,
+    orbitIndex: 0,
+    unlocked: true,
+    visitCount: 0,
+    secretRevealAt: 2,
+  },
+  {
+    id: 'return',
+    label: 'RETURN',
+    emoji: '🌟',
+    description: 'A reason to come back every day',
+    color: '#ffd700',
+    size: 46,
+    speed: 40,
+    orbitIndex: 1,
+    unlocked: true,
+    visitCount: 0,
+    secretRevealAt: 1,
   },
 ];
 
@@ -321,83 +382,27 @@ export const TIMELINE = [
     era: 'First Date',
     date: 'The Beginning of Everything',
     icon: '🌟',
-    story: 'Our very first date ever. The beginning of us. I still remember exactly what it felt like — like the universe finally exhaled.',
+    story: 'Our very first date ever. The beginning of us. I still remember exactly what it felt like to walk beside her — like the universe had finally exhaled.',
     color: '#ff7ab6',
-    photo: OUR_PHOTOS[0],
+    photo: null,
   },
   {
-    id: 'her-birthday',
-    era: 'Her Birthday',
-    date: 'A Special Day',
-    icon: '🎂',
-    story: 'On her birthday — a small, quick, perfect little date. The kind of ordinary moment that feels extraordinary when you\'re with the right person.',
-    color: '#f7d774',
-    photo: OUR_PHOTOS[1],
+    id: 'milestone-text-1',
+    era: 'A Quiet Afternoon',
+    date: 'The Day Everything Felt Right',
+    icon: '☀️',
+    story: 'There was one ordinary afternoon where nothing special happened — and yet, everything felt perfect. Just existing near her was enough. That day I realised: she is home.',
+    color: '#ffe4a0',
+    photo: null,
   },
   {
-    id: 'my-birthday',
-    era: 'My Birthday',
-    date: 'Our Last Meetup',
-    icon: '🎁',
-    story: 'Our last meetup — on my birthday. A memory I hold forever. The kind that doesn\'t fade, that gets more golden with every passing day.',
-    color: '#9b7bff',
-    photo: OUR_PHOTOS[2],
-  },
-];
-
-// ─── Wishes & Promises ───────────────────────────────
-export const BIRTHDAY_WISHES = [
-  'May every day feel as bright as your smile on our first date.',
-  'May the universe conspire endlessly in your favor.',
-  'May you always know, in your quietest moments, that you are deeply loved.',
-  'May every door you knock on open like it was built for you.',
-  'May your dreams be as vast as the sky you were born under.',
-  'May happiness find you before you even go looking for it.',
-  'May this year hold more magic than all your previous ones combined.',
-];
-
-export const PROMISES = [
-  { icon: '🌙', text: 'I will choose you in every universe, across every timeline, without hesitation.' },
-  { icon: '⭐', text: 'I will be patient — even when the distance feels like light years.' },
-  { icon: '🔥', text: 'I will carry this love like a flame — steady, warm, impossible to extinguish.' },
-  { icon: '🌊', text: 'I will be your safe harbor when the tide gets rough.' },
-  { icon: '✨', text: 'I will never stop noticing the beautiful details about you that the world overlooks.' },
-  { icon: '💫', text: 'I will remember every version of you — past, present, and every future one.' },
-];
-
-// ─── Frequency Signals ───────────────────────────────
-export const FREQUENCY_SIGNALS = [
-  { freq: '7.83 Hz', label: 'Earth\'s Heartbeat', meaning: 'The frequency of our planet — the same that was humming when we met.' },
-  { freq: '528 Hz', label: 'Love Frequency', meaning: 'Scientists call this the tone of love and healing. I call it the sound of your name.' },
-  { freq: '432 Hz', label: 'Universe Tuning', meaning: 'The resonance of everything — the universe breathing in harmony.' },
-  { freq: '∞ Hz', label: 'Our Frequency', meaning: 'Unmeasurable. Undeniable. Ours.' },
-];
-
-// ─── Quiz Questions (PlanetPlay) ─────────────────────
-export const QUIZ_QUESTIONS = [
-  {
-    q: 'What was the original spark between us?',
-    options: ['A compliment', 'A truth or dare', 'A shared playlist', 'A coincidence'],
-    answer: 1,
-    explanation: 'It started as a dare — one that changed both our lives.',
-  },
-  {
-    q: 'What time did she first say "Love you"?',
-    options: ['11:11 PM', '12:00 AM', '5:30 AM', '8:00 PM'],
-    answer: 2,
-    explanation: '5:30 AM — before her biology exam. The most beautiful alarm I ever heard.',
-  },
-  {
-    q: 'How long did it take to build the bridge?',
-    options: ['1 week', '1 month', '3 months', '6 months'],
-    answer: 2,
-    explanation: '3 months of memes, messages, and patience. Worth every second.',
-  },
-  {
-    q: 'When was the formal proposal?',
-    options: ['December 18, 2022', 'November 14, 2022', 'January 1, 2023', 'December 25, 2022'],
-    answer: 0,
-    explanation: 'December 18, 2022 — ~2:00 PM. The moment I stopped waiting and started asking.',
+    id: 'milestone-text-2',
+    era: 'The Promise',
+    date: 'A Night Full of Stars',
+    icon: '🌙',
+    story: 'Late at night, under a sky full of stars, I made a quiet promise to myself — to always choose her, to always show up, to always make sure she knows how much she means to me. A promise I intend to keep forever.',
+    color: '#e0c3ff',
+    photo: null,
   },
 ];
 
@@ -405,89 +410,225 @@ export const QUIZ_QUESTIONS = [
 export const ECHO_MESSAGES = [
   {
     id: 'echo-1',
-    speaker: 'Her',
-    text: '"Love you."',
-    context: '5:30 AM, before her biology exam. December 19.',
-    weight: 'The message that changed the axis of my world.',
-    color: '#ff7ab6',
+    speaker: UNIVERSE_NAME,
+    text: '"Love you"',
+    context: 'December 19, 2022 — 5:30 AM, before biology exam',
+    weight: 'Two words. Seven letters. A universe collapsed into a moment. I read it seven times before I believed it was real.',
+    color: '#f7d774',
   },
   {
     id: 'echo-2',
-    speaker: 'Her',
-    text: '"Don\'t message again."',
-    context: 'The very beginning. The first wall.',
-    weight: 'I smiled when she said this. Because I already knew.',
+    speaker: SENDER_NAME,
+    text: '"You."',
+    context: 'When she asked who his crush was during truth or dare',
+    weight: 'One word. The most honest thing I have ever said. It landed like a stone in still water — the ripples are still moving.',
     color: '#9b7bff',
   },
   {
     id: 'echo-3',
-    speaker: 'Him',
-    text: '"You."',
-    context: 'When asked his crush, during a dare.',
-    weight: 'One word. One truth. Everything changed.',
-    color: '#f7d774',
+    speaker: UNIVERSE_NAME,
+    text: '"I had a crush on you too."',
+    context: 'November — when she finally admitted it',
+    weight: 'She said it carefully, like it was fragile. I held it like glass. Still do.',
+    color: '#ff7ab6',
   },
   {
     id: 'echo-4',
-    speaker: 'Her',
-    text: '"I had a crush on you."',
-    context: 'November. She finally admitted it.',
-    weight: 'Patience is its own kind of love language.',
+    speaker: SENDER_NAME,
+    text: '"I need time."',
+    context: 'After the proposal — what she said. What I accepted.',
+    weight: 'I gave it without question. Because some things cannot be rushed. She was worth every second of the wait.',
     color: '#7be3ff',
   },
 ];
 
-// ─── Mirror Traits ───────────────────────────────────
-export const HER_TRAITS = [
-  { trait: 'Brilliant', detail: 'The kind of intelligence that shows in how you see the world, not just what you know.', icon: '✨' },
-  { trait: 'Gentle', detail: 'Even your directness has a softness in it. A rare combination.', icon: '🌿' },
-  { trait: 'Brave', detail: 'You said "Love you" before sunrise. That takes a kind of courage most people never find.', icon: '🦋' },
-  { trait: 'Patient', detail: 'You let things unfold in their time. That\'s wisdom dressed as stillness.', icon: '🌙' },
-  { trait: 'Real', detail: 'Unapologetically yourself. That\'s the most magnetic thing in the universe.', icon: '💫' },
-  { trait: 'Worth it', detail: 'Every message, every moment, every second of waiting. You were always worth it.', icon: '♾️' },
+// ─── Frequency Signals ───────────────────────────────
+export const FREQUENCY_SIGNALS = [
+  { freq: '88.4 MHz', label: 'The Laugh Frequency', meaning: 'The way she laughs at things I say — even the ones that aren\'t that funny. That frequency lives rent-free in my head.' },
+  { freq: '147.2 MHz', label: 'The 3AM Signal', meaning: '"Still awake?" — our late-night frequency. The one we tuned into when the world was quiet and it was just us.' },
+  { freq: '220.0 MHz', label: 'The Meme Wavelength', meaning: 'Every meme I sent was chosen deliberately. Each one was a bridge. Each one said: I thought of you.' },
+  { freq: '333.3 MHz', label: 'The Silence Frequency', meaning: 'The comfortable kind of silence. Where no one has to say anything because just being there is already enough.' },
+  { freq: '440.0 MHz', label: 'The Love-You Wave', meaning: 'The rarest and most powerful signal. When it arrived at 5:30 AM, it recalibrated everything.' },
 ];
 
 // ─── Void Confessions ────────────────────────────────
 export const VOID_CONFESSIONS = [
-  'The real distance between us was never miles. It was the time before I found you.',
-  'I rehearsed what I would say when she finally asked about my crush. Then I just said "you" anyway.',
-  'I keep your name in my quietest moments — that\'s where the most honest things live.',
-  'Missing you is not emptiness. It\'s the shape of how much I love you.',
-  'The universe makes no sense to me without you in it somewhere.',
-  'I built this entire universe just to say: I see you. I choose you. Happy Birthday.',
+  'I kept every message you ever sent me.',
+  'Some nights I scrolled back to the beginning just to see how far we came.',
+  'I chose every meme I sent you. None of it was random.',
+  'When you said "don\'t message me again" I smiled — because I knew that wasn\'t the end.',
+  'I memorised the time you said "Love you" — 5:30 AM. I always will.',
+  'You are the only person I\'ve ever felt this particular kind of nervous around.',
+  'I wanted to reply instantly every time. I made myself wait so I wouldn\'t seem too eager.',
+  'I have thought about you more than I have ever admitted.',
 ];
 
-// ─── Scroll Letter ───────────────────────────────────
-export const SCROLL_LETTER = `Dear Pravena,
+// ─── Promises ────────────────────────────────────────
+export const PROMISES = [
+  { icon: '🌙', text: 'I promise to always show up — quietly, consistently, without needing credit for it.' },
+  { icon: '💛', text: 'I promise to remember the small things. The ones you think I forgot.' },
+  { icon: '🌊', text: 'I promise to be patient — even when it is hard, even when I don\'t understand.' },
+  { icon: '🌟', text: 'I promise to make you feel chosen. Every single day.' },
+  { icon: '🕯️', text: 'I promise that these words are not just for today. They are for every ordinary Tuesday that follows.' },
+  { icon: '♾️', text: 'I promise to keep choosing you. Not just once. Not just when it\'s easy.' },
+];
 
-If you are reading this — you made it across the universe I built for you. Every planet you visited, every signal you decoded, every moment you paused to read — that was me, reaching across the distance, trying to say something that words alone can never hold.
-
-You changed something in me. Not in the dramatic, cinematic way people describe in movies. Quietly. Steadily. The way stars don't announce themselves — they just appear, and suddenly the sky is different.
-
-I think about December 19 often. 5:30 AM. You, about to leave for an exam. Me, on the other side of a screen. And then — "Love you." Just like that. As if it was the most natural thing in the world.
-
-It was.
-
-You are someone who deserves to be celebrated — not just on birthdays, but in ordinary Tuesdays, in quiet moments, in the small acts of choosing you that no one else sees.
-
-I chose you then. I choose you now. I will keep choosing you in every universe I get to exist in.
-
-Happy Birthday, Pravena.
-
-The universe made you exactly right.
-
-— Sivaram
-
-P.S. Thank you for not blocking me after that first dare. 🌙`;
-
-// ─── Memos (shared memories as short notes) ──────────
+// ─── Memos ───────────────────────────────────────────
 export const MEMOS = [
-  { id: 'm1', emoji: '🌙', title: 'That one night', body: 'The conversation that went so long we forgot what time it was. That\'s when I knew.', color: '#9b7bff', pinned: true },
-  { id: 'm2', emoji: '😂', title: 'The meme era', body: 'Three months of forwards, stickers, and laugh-crying emojis. My most sophisticated courtship strategy.', color: '#f7d774', pinned: false },
-  { id: 'm3', emoji: '📚', title: 'Biology exam morning', body: '5:30 AM. You had to study. Instead you said two words that made me forget how to breathe.', color: '#ff7ab6', pinned: true },
-  { id: 'm4', emoji: '🌟', title: 'First date', body: 'I was nervous. You were radiant. We were awkward in the best way. I knew from that first moment.', color: '#74c7f7', pinned: false },
-  { id: 'm5', emoji: '🎂', title: 'Your birthday', body: 'Small. Quick. Perfect. The kind of date that asks nothing and gives everything.', color: '#ffd6b0', pinned: true },
-  { id: 'm6', emoji: '🎁', title: 'My birthday', body: 'Our last meetup. I\'m still holding onto it — gently, carefully, the way you hold something irreplaceable.', color: '#b4f7a0', pinned: false },
-  { id: 'm7', emoji: '💌', title: 'The dare', body: 'Everything started with a dare. I have no regrets about any of it. Not a single word.', color: '#e0c3ff', pinned: false },
-  { id: 'm8', emoji: '♾️', title: 'Right now', body: 'This moment. You reading this. That means everything I built reached you. That\'s the whole point.', color: '#ffe4a0', pinned: true },
+  { id: 'm1', emoji: '📌', title: 'The Biology Exam Morning', body: 'I will remember that morning forever. 5:30 AM. Those two words. That biology exam you had to rush to. Some mornings just stay.', color: '#f7d774', pinned: true },
+  { id: 'm2', emoji: '📝', title: 'Why I Kept Sending Memes', body: 'It wasn\'t random. I\'d scroll through dozens to find the one you might smile at. That was my way of thinking of you out loud.', color: '#ff7ab6', pinned: true },
+  { id: 'm3', emoji: '🌙', title: '3 AM Rule', body: 'We had an unspoken rule: if either of us was awake at 3 AM, we were probably thinking of each other.', color: '#9b7bff', pinned: false },
+  { id: 'm4', emoji: '🎲', title: 'The Dare That Started It', body: 'It was supposed to be a joke. She said don\'t message again. I smiled. The rest is us.', color: '#7be3ff', pinned: false },
+  { id: 'm5', emoji: '☀️', title: 'What I Notice', body: 'The way you tuck your hair. The way you say things quietly when they matter most. The way you exist — beautifully, effortlessly.', color: '#ffe4a0', pinned: true },
+];
+
+// ─── Her Traits (Mirror Planet) ──────────────────────
+export const HER_TRAITS = [
+  { icon: '✨', trait: 'Quietly Radiant', detail: 'You don\'t demand attention. You just have it. There is a warmth in the way you carry yourself that makes every room lighter.' },
+  { icon: '💛', trait: 'Genuinely Kind', detail: 'Not performative kindness. The real kind. The kind that shows up without being asked, that notices without being told.' },
+  { icon: '🌊', trait: 'Deeply Feeling', detail: 'You feel things fully. That\'s not weakness — that\'s one of the rarest, most beautiful things about you.' },
+  { icon: '🌟', trait: 'Unexpectedly Funny', detail: 'The way your humour arrives without warning. It catches me off guard every time and I love that it does.' },
+  { icon: '🔥', trait: 'Quietly Brave', detail: 'You have handled more than people know. With a calm that I deeply admire. You are stronger than you believe.' },
+  { icon: '🪞', trait: 'Real', detail: 'You don\'t pretend. What I see is what you are. That kind of realness is extraordinarily rare and completely magnetic.' },
+];
+
+// ─── Birthday Wishes (Voices Planet) ────────────────
+export const BIRTHDAY_WISHES = [
+  'May every day of this new year feel as warm as the moments that made our story.',
+  'You deserve every beautiful thing the universe has been saving up for you.',
+  'Happy birthday to the girl who changed the gravity of my entire world.',
+  'Today the stars aligned — because they had to, to celebrate someone like you.',
+  'Here\'s to you: rare, radiant, and completely unforgettable.',
+];
+
+// ─── Friends Video Wishes ────────────────────────────
+export const FRIENDS_VIDEOS = [
+  { name: 'Nishmitha', videoUrl: '', wishText: 'Wishing you the most magical birthday, Prave! You deserve all the love and happiness in the world. 🌸' },
+  { name: 'Vidharshana', videoUrl: '', wishText: 'Happy birthday bestie! No one shines quite like you do. Stay golden always! ✨' },
+  { name: 'Sai Sushma', videoUrl: '', wishText: 'To my favorite person — may this birthday be as beautiful as your smile! 💛' },
+  { name: 'Yasmin', videoUrl: '', wishText: 'Pravena! Happy birthday! You make every day brighter just by being you. 🌟' },
+  { name: 'Shashwathii', videoUrl: '', wishText: 'Wishing you endless joy today and always! So grateful to have you in my life. 🎂' },
+  { name: 'Varunaa', videoUrl: '', wishText: 'Happy birthday Prave! Here\'s to another year of your incredible, unstoppable self! 🚀' },
+  { name: 'Rithika', videoUrl: '', wishText: 'To the kindest soul I know — happy birthday! The world is better with you in it. 💖' },
+  { name: 'Sheryl', videoUrl: '', wishText: 'Happy birthday! May your day be as wonderful and radiant as you always are! 🌺' },
+  { name: 'Preethi', videoUrl: '', wishText: 'Pravena, happy birthday! You are one of a kind and don\'t you ever forget that! 🦋' },
+  { name: 'Harshini', videoUrl: '', wishText: 'Wishing you a birthday as beautiful as your heart! Love you loads! 💝' },
+  { name: 'Risha', videoUrl: '', wishText: 'Happy birthday to the most amazing person! May all your dreams come true! 🌙' },
+];
+
+// ─── Tanglish Chat Messages ──────────────────────────
+export const TANGLISH_CHAT = [
+  { from: 'him', text: 'Da... innum thookam varalaya?', time: '11:47 PM' },
+  { from: 'her', text: 'Illa... something la mind stuck aaguthu', time: '11:48 PM' },
+  { from: 'him', text: 'enna da athu? share pannuva?', time: '11:48 PM' },
+  { from: 'her', text: 'Nee romba overthink pannuva nu theriyum... so just leave it', time: '11:49 PM' },
+  { from: 'him', text: 'adhu en matter... nee sollu', time: '11:50 PM' },
+  { from: 'her', text: '... nee ippo busy ah?', time: '11:51 PM' },
+  { from: 'him', text: 'unakkaaga? never busy da 🙂', time: '11:51 PM' },
+  { from: 'her', text: 'okay fine. naan unna paathu nervous aaguren', time: '11:53 PM' },
+  { from: 'him', text: 'wait what 😭', time: '11:53 PM' },
+  { from: 'her', text: 'sorryyy illaina solliruken... forget it', time: '11:54 PM' },
+  { from: 'him', text: 'illa illa... naan happy ah shocked aanen da. neeyo same feel panra?', time: '11:55 PM' },
+  { from: 'her', text: '...maybe 🙈', time: '11:56 PM' },
+  { from: 'him', text: 'ennaku unna padam padam pidichiruku from day one. ennaku theriyum', time: '11:57 PM' },
+  { from: 'her', text: 'over ah pesaadha 😂', time: '11:57 PM' },
+  { from: 'him', text: 'oru question... biology exam la epdi irundha? well ah irundha?', time: '11:58 PM' },
+  { from: 'her', text: 'haha pathetically irundha... nee kaara 🙄', time: '11:59 PM' },
+  { from: 'him', text: 'ennaku theriyum 😌', time: '11:59 PM' },
+  { from: 'her', text: 'okay fine. nee irundha... naan happy ah feel panren. satisfied?', time: '12:00 AM' },
+  { from: 'him', text: 'very 💛', time: '12:00 AM' },
+  { from: 'her', text: 'now sleep. exam iruku tomoro', time: '12:01 AM' },
+  { from: 'him', text: 'okay okay... goodnight da. love you 🌙', time: '12:01 AM' },
+  { from: 'her', text: 'love you too 💛', time: '12:02 AM' },
+];
+
+// ─── Daily Quotes ────────────────────────────────────
+export const DAILY_QUOTES = [
+  'Sunday: Even the universe takes a rest — but my love for you never pauses, not even for a moment.',
+  'Monday: A new week begins, and my first thought — as always — is you. It always will be.',
+  'Tuesday: The quietest days hold the loudest feelings. Today I am feeling everything, and it is all for you.',
+  'Wednesday: Halfway through the week, and halfway through my thoughts — you occupy the other half entirely.',
+  'Thursday: Almost there. Like our story — every step forward, every day, is something I\'d choose again.',
+  'Friday: The stars come out on Fridays. But honestly, my favorite star is you, and you shine every day.',
+  'Saturday: On the most relaxed day of the week, I find myself most aware of how lucky I am to know you.',
+];
+
+// ─── Quiz Questions ───────────────────────────────────
+export const QUIZ_QUESTIONS = [
+  {
+    question: 'How did our story first begin?',
+    options: ['A random DM', 'Through a game of Truth or Dare', 'Through a mutual friend', 'She texted me first'],
+    correct: 1,
+    explanation: 'A dare changed everything. I told her not to take it seriously — and then everything got very serious. ✨',
+  },
+  {
+    question: 'What time did she say "Love you" that life-changing morning?',
+    options: ['12:00 AM', '3:00 AM', '5:30 AM', '7:00 AM'],
+    correct: 2,
+    explanation: 'December 19, 2022. 5:30 AM. Before her biology exam. I have never read two words so many times in my life.',
+  },
+  {
+    question: 'What was one of the first ways he kept the conversation alive?',
+    options: ['Voice notes', 'Memes and ShareChat forwards', 'Long letters', 'Calling her every day'],
+    correct: 1,
+    explanation: 'Every meme was chosen with intention. Nothing was random. Everything was a quiet way of saying: I\'m thinking of you.',
+  },
+  {
+    question: 'When she was asked who his crush was, what did he say?',
+    options: ['"No one"', '"My neighbor"', '"You"', '"I don\'t have one"'],
+    correct: 2,
+    explanation: 'One word. The most honest thing I\'ve ever said. Her reaction was worth every second of vulnerability.',
+  },
+  {
+    question: 'What is the name of our special starting date?',
+    options: ['November 14, 2022', 'December 18, 2022', 'December 19, 2022', 'January 1, 2023'],
+    correct: 2,
+    explanation: 'December 19, 2022. The morning that became the beginning of everything. Our anniversary.',
+  },
+];
+
+// ─── Memory Card Pairs ───────────────────────────────
+export const MEMORY_CARD_PAIRS = [
+  { id: 'pair1', emoji: '💛', label: 'Love' },
+  { id: 'pair2', emoji: '🌙', label: 'Night' },
+  { id: 'pair3', emoji: '🌸', label: 'Bloom' },
+  { id: 'pair4', emoji: '⭐', label: 'Star' },
+  { id: 'pair5', emoji: '🎲', label: 'Dare' },
+  { id: 'pair6', emoji: '📱', label: 'Meme' },
+  { id: 'pair7', emoji: '💌', label: 'Letter' },
+  { id: 'pair8', emoji: '🌊', label: 'Tide' },
+];
+
+// ─── Scroll Letter Lines ─────────────────────────────
+export const SCROLL_LETTER_LINES = [
+  'Dear Pravena,',
+  '',
+  'If you are reading this, it means the universe delivered something',
+  'I wrote a long time ago — when words were all I had.',
+  '',
+  'I want you to know something true:',
+  '',
+  'The way you walked into my life — quietly, unexpectedly,',
+  'through a dare of all things — was the most unlikely beginning.',
+  'But the most unlikely beginnings make the most unforgettable stories.',
+  '',
+  'I chose every meme. Every message. Every pause before replying.',
+  'None of it was accidental.',
+  '',
+  'You are the person I stayed up for.',
+  'The person I searched for words for.',
+  'The person I still find myself writing to,',
+  'even when I don\'t send what I write.',
+  '',
+  'On your birthday — I want you to know:',
+  'You are not just someone I love.',
+  'You are someone I admire.',
+  'Someone I am endlessly grateful to know.',
+  '',
+  'Happy birthday, Pravena.',
+  'The universe did well when it made you.',
+  '',
+  '— Sivaram',
+  '',
+  'P.S. The biology exam morning? Still my favorite 5:30 AM. Always.',
 ];
