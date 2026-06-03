@@ -14,6 +14,8 @@ const components: Record<string, React.LazyExoticComponent<React.FC>> = {
   play: lazy(() => import('./PlanetPlay')),
   eternity: lazy(() => import('./PlanetEternity')),
   scroll: lazy(() => import('./PlanetScroll')),
+  vault: lazy(() => import('./PlanetVault')),
+  return: lazy(() => import('./PlanetReturn')),
 };
 
 const Fallback: React.FC = () => (
