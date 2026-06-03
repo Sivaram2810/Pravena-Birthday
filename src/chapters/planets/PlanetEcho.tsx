@@ -33,7 +33,6 @@ const PlanetEcho: React.FC = () => {
             onClick={() => toggle(i)}
             className="cursor-pointer"
           >
-            {/* Speaker tag */}
             <div className="flex items-center gap-2 mb-2 ml-2">
               <div className="w-2 h-2 rounded-full" style={{ background: msg.color }} />
               <span className="font-cinzel text-xs" style={{ color: msg.color, fontSize: 9, letterSpacing: '0.1em' }}>
@@ -41,7 +40,6 @@ const PlanetEcho: React.FC = () => {
               </span>
             </div>
 
-            {/* Message bubble */}
             <motion.div
               className="rounded-2xl p-5"
               style={{
@@ -51,7 +49,6 @@ const PlanetEcho: React.FC = () => {
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
             >
-              {/* The message */}
               <p
                 className="font-cormorant text-xl italic leading-relaxed"
                 style={{
@@ -64,7 +61,6 @@ const PlanetEcho: React.FC = () => {
                 {msg.text}
               </p>
 
-              {/* Context & weight */}
               <AnimatePresence>
                 {revealed.has(i) && (
                   <motion.div
