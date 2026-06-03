@@ -19,7 +19,6 @@ const PlanetMemos: React.FC = () => {
         <p className="font-cormorant text-lg text-gray-300 mt-2 italic">Little notes, infinite meaning</p>
       </motion.div>
 
-      {/* Sort toggle */}
       <div className="flex gap-3">
         {[
           { label: '📌 Pinned First', value: true },
@@ -40,7 +39,6 @@ const PlanetMemos: React.FC = () => {
         ))}
       </div>
 
-      {/* Memo grid */}
       <div className="w-full max-w-lg grid grid-cols-1 gap-3">
         {sorted.map((memo, i) => (
           <motion.div
@@ -56,13 +54,8 @@ const PlanetMemos: React.FC = () => {
               border: `1px solid ${memo.color}${expanded === memo.id ? '44' : '22'}`,
             }}
           >
-            {/* Pin badge */}
             {memo.pinned && (
-              <div
-                className="absolute top-2 right-2 text-xs"
-                style={{ color: memo.color, fontSize: 10 }}
-                title="Pinned"
-              >
+              <div className="absolute top-2 right-2 text-xs" style={{ color: memo.color, fontSize: 10 }} title="Pinned">
                 📌
               </div>
             )}
@@ -70,9 +63,7 @@ const PlanetMemos: React.FC = () => {
             <div className="flex items-start gap-3">
               <span className="text-xl flex-shrink-0 mt-0.5">{memo.emoji}</span>
               <div className="flex-1 min-w-0">
-                <p className="font-cinzel text-sm font-bold truncate" style={{ color: memo.color }}>
-                  {memo.title}
-                </p>
+                <p className="font-cinzel text-sm font-bold truncate" style={{ color: memo.color }}>{memo.title}</p>
                 <AnimatePresence>
                   {expanded === memo.id ? (
                     <motion.p
