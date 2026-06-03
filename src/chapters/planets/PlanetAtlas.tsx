@@ -16,7 +16,6 @@ const PlanetAtlas: React.FC = () => {
       </motion.div>
 
       <div className="w-full max-w-2xl relative">
-        {/* Central line */}
         <div
           className="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2"
           style={{ background: 'linear-gradient(to bottom, transparent, rgba(247,215,116,0.35) 10%, rgba(247,215,116,0.35) 90%, transparent)' }}
@@ -33,13 +32,11 @@ const PlanetAtlas: React.FC = () => {
               className={`relative flex ${isRight ? 'justify-start' : 'justify-end'} mb-8`}
               style={{ paddingLeft: isRight ? '0' : '50%', paddingRight: isRight ? '50%' : '0' }}
             >
-              {/* Timeline dot */}
               <div
                 className="absolute left-1/2 top-4 w-3 h-3 rounded-full -translate-x-1/2 z-10"
                 style={{ background: moment.color, boxShadow: `0 0 10px ${moment.color}` }}
               />
 
-              {/* Card */}
               <motion.div
                 onClick={() => setSelectedMoment(moment)}
                 className={`cursor-pointer rounded-2xl p-4 ${isRight ? 'mr-4' : 'ml-4'} w-full max-w-xs`}
@@ -50,24 +47,18 @@ const PlanetAtlas: React.FC = () => {
                 whileHover={{ scale: 1.03, borderColor: `${moment.color}66` }}
                 whileTap={{ scale: 0.98 }}
               >
-                {moment.photo && (
-                  <div className="rounded-xl overflow-hidden mb-3" style={{ maxHeight: 120 }}>
-                    <img src={moment.photo.url} alt={moment.photo.label} className="w-full h-32 object-cover" loading="lazy" />
-                  </div>
-                )}
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-lg">{moment.icon}</span>
                   <span className="font-cinzel text-xs tracking-wider" style={{ color: moment.color }}>{moment.era}</span>
                 </div>
                 <p className="font-cinzel text-xs text-gray-500 mb-2">{moment.date}</p>
-                <p className="font-cormorant text-sm text-gray-300 italic leading-relaxed">{moment.story}</p>
+                <p className="font-cormorant text-sm text-gray-300 italic leading-relaxed line-clamp-3">{moment.story}</p>
               </motion.div>
             </motion.div>
           );
         })}
       </div>
 
-      {/* Detail modal */}
       <AnimatePresence>
         {selectedMoment && (
           <motion.div
@@ -94,11 +85,6 @@ const PlanetAtlas: React.FC = () => {
                   <p className="font-cormorant text-xs text-gray-400 italic">{selectedMoment.date}</p>
                 </div>
               </div>
-              {selectedMoment.photo && (
-                <div className="rounded-xl overflow-hidden mb-4">
-                  <img src={selectedMoment.photo.url} alt={selectedMoment.photo.label} className="w-full h-40 object-cover" />
-                </div>
-              )}
               <p className="font-cormorant text-base text-gray-200 italic leading-relaxed">{selectedMoment.story}</p>
             </motion.div>
           </motion.div>
