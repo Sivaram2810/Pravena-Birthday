@@ -31,7 +31,7 @@ const VAULT_CONTENTS = [
   },
 ];
 
-const PlanetX: React.FC = () => {
+const PlanetVault: React.FC = () => {
   const [unlocked, setUnlocked] = useState(false);
   const [codeInput, setCodeInput] = useState('');
   const [codeError, setCodeError] = useState(false);
@@ -62,7 +62,7 @@ const PlanetX: React.FC = () => {
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
         <h1
           className="font-cinzel text-3xl md:text-5xl font-bold"
-          style={{ color: '#8b0000', textShadow: '0 0 30px rgba(139,0,0,0.6)' }}
+          style={{ color: '#cc4444', textShadow: '0 0 30px rgba(204,68,68,0.6)' }}
         >
           🔐 VAULT
         </h1>
@@ -70,35 +70,30 @@ const PlanetX: React.FC = () => {
       </motion.div>
 
       {!unlocked ? (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-md"
-        >
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md">
           <div
             className="rounded-3xl p-8 flex flex-col items-center gap-6"
             style={{
               background: 'linear-gradient(135deg, #1a0000, #0d0000)',
-              border: '2px solid rgba(139,0,0,0.4)',
-              boxShadow: '0 0 40px rgba(139,0,0,0.1)',
+              border: '2px solid rgba(204,68,68,0.4)',
+              boxShadow: '0 0 40px rgba(204,68,68,0.1)',
             }}
           >
-            {/* Lock icon */}
             <div className="relative">
               <motion.div
                 className="w-24 h-24 rounded-full flex items-center justify-center"
-                style={{ background: 'radial-gradient(circle, #1a0000, #0d0000)', border: '2px solid rgba(139,0,0,0.5)' }}
-                animate={{ boxShadow: ['0 0 20px rgba(139,0,0,0.2)', '0 0 40px rgba(139,0,0,0.4)', '0 0 20px rgba(139,0,0,0.2)'] }}
+                style={{ background: 'radial-gradient(circle, #1a0000, #0d0000)', border: '2px solid rgba(204,68,68,0.5)' }}
+                animate={{ boxShadow: ['0 0 20px rgba(204,68,68,0.2)', '0 0 40px rgba(204,68,68,0.4)', '0 0 20px rgba(204,68,68,0.2)'] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                <Lock size={36} style={{ color: '#8b0000' }} />
+                <Lock size={36} style={{ color: '#cc4444' }} />
               </motion.div>
               {[0, 90, 180, 270].map(deg => (
                 <div
                   key={deg}
                   className="absolute w-3 h-3 rounded-full"
                   style={{
-                    background: '#8b0000',
+                    background: '#cc4444',
                     top: '50%',
                     left: '50%',
                     transform: `rotate(${deg}deg) translate(42px, -50%)`,
@@ -109,11 +104,10 @@ const PlanetX: React.FC = () => {
             </div>
 
             <div className="text-center">
-              <h2 className="font-cinzel text-xl font-bold" style={{ color: '#8b0000' }}>VAULT ACCESS</h2>
+              <h2 className="font-cinzel text-xl font-bold" style={{ color: '#cc4444' }}>VAULT ACCESS</h2>
               <p className="font-cormorant text-sm text-gray-500 italic mt-1">Enter the secret code to unlock</p>
             </div>
 
-            {/* Code input */}
             <div className="w-full">
               <input
                 type="text"
@@ -124,14 +118,13 @@ const PlanetX: React.FC = () => {
                 className="w-full p-4 rounded-xl text-center font-cinzel text-xl text-white placeholder-gray-600 tracking-widest"
                 style={{
                   background: codeError ? 'rgba(255,0,0,0.1)' : 'rgba(255,255,255,0.05)',
-                  border: `2px solid ${codeError ? 'rgba(255,0,0,0.5)' : 'rgba(139,0,0,0.3)'}`,
+                  border: `2px solid ${codeError ? 'rgba(255,0,0,0.5)' : 'rgba(204,68,68,0.3)'}`,
                   outline: 'none',
                 }}
                 maxLength={10}
               />
             </div>
 
-            {/* Error */}
             <AnimatePresence>
               {codeError && (
                 <motion.p
@@ -146,13 +139,8 @@ const PlanetX: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {/* Hint */}
             {showHint && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="font-cormorant text-sm text-gray-400 italic"
-              >
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="font-cormorant text-sm text-gray-400 italic">
                 Hint: It's what he calls you 💛
               </motion.p>
             )}
@@ -161,8 +149,8 @@ const PlanetX: React.FC = () => {
               onClick={handleUnlock}
               className="w-full py-3 rounded-xl font-cinzel text-sm tracking-wider flex items-center justify-center gap-2"
               style={{
-                background: 'linear-gradient(135deg, rgba(139,0,0,0.4), rgba(100,0,0,0.4))',
-                border: '1px solid rgba(139,0,0,0.5)',
+                background: 'linear-gradient(135deg, rgba(204,68,68,0.4), rgba(160,0,0,0.4))',
+                border: '1px solid rgba(204,68,68,0.5)',
                 color: '#cc4444',
               }}
               whileHover={{ scale: 1.02 }}
@@ -189,11 +177,7 @@ const PlanetX: React.FC = () => {
           animate={{ opacity: 1, scale: 1 }}
           className="w-full max-w-2xl flex flex-col gap-6"
         >
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center">
             <div className="text-4xl mb-2">🔓</div>
             <p className="font-cinzel text-sm tracking-widest" style={{ color: '#f7d774' }}>VAULT UNLOCKED</p>
             <p className="font-cormorant text-sm text-gray-400 italic mt-1">These are the things I never quite said out loud</p>
@@ -208,9 +192,9 @@ const PlanetX: React.FC = () => {
               className="rounded-2xl overflow-hidden cursor-pointer"
               style={{
                 background: openedSecrets.has(secret.id)
-                  ? 'linear-gradient(135deg, rgba(247,215,116,0.08), rgba(139,0,0,0.06))'
+                  ? 'linear-gradient(135deg, rgba(247,215,116,0.08), rgba(204,68,68,0.06))'
                   : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${openedSecrets.has(secret.id) ? 'rgba(247,215,116,0.3)' : 'rgba(139,0,0,0.2)'}`,
+                border: `1px solid ${openedSecrets.has(secret.id) ? 'rgba(247,215,116,0.3)' : 'rgba(204,68,68,0.2)'}`,
               }}
               onClick={() => toggleSecret(secret.id)}
             >
@@ -246,4 +230,4 @@ const PlanetX: React.FC = () => {
   );
 };
 
-export default PlanetX;
+export default PlanetVault;
