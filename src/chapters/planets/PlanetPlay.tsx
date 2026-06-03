@@ -41,13 +41,10 @@ const QuizGame: React.FC = () => {
           {score === QUIZ_QUESTIONS.length
             ? 'Perfect! You know our story by heart 💛'
             : score >= 3
-            ? 'You remember so much of us 🌸'
-            : 'Some memories are waiting to be revisited 🌙'}
+              ? 'You remember so much of us 🌸'
+              : 'Some memories are waiting to be revisited 🌙'}
         </p>
-        <div
-          className="w-full h-2 rounded-full mt-4 overflow-hidden"
-          style={{ background: 'rgba(255,255,255,0.1)' }}
-        >
+        <div className="w-full h-2 rounded-full mt-4 overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
           <motion.div
             className="h-full rounded-full"
             style={{ background: 'linear-gradient(to right, #9b7bff, #f7d774)' }}
@@ -71,7 +68,6 @@ const QuizGame: React.FC = () => {
 
   return (
     <div className="w-full">
-      {/* Progress */}
       <div className="flex justify-between items-center mb-4">
         <span className="font-cinzel text-xs text-gray-500">{currentQ + 1}/{QUIZ_QUESTIONS.length}</span>
         <span className="font-cinzel text-xs" style={{ color: '#f7d774' }}>Score: {score}</span>
@@ -92,7 +88,6 @@ const QuizGame: React.FC = () => {
           transition={{ duration: 0.3 }}
         >
           <p className="font-cormorant text-xl text-white italic mb-6 leading-relaxed">{q.question}</p>
-
           <div className="flex flex-col gap-3">
             {q.options.map((opt, i) => {
               const isCorrect = i === q.correct;
@@ -103,7 +98,6 @@ const QuizGame: React.FC = () => {
                 if (isCorrect) { bg = 'rgba(100,255,150,0.1)'; border = 'rgba(100,255,150,0.5)'; }
                 else if (isSelected) { bg = 'rgba(255,100,100,0.1)'; border = 'rgba(255,100,100,0.5)'; }
               }
-
               return (
                 <motion.button
                   key={i}
@@ -167,7 +161,6 @@ const MemoryGame: React.FC = () => {
       flipped: false,
       matched: false,
     }));
-    // shuffle
     for (let i = pairs.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [pairs[i], pairs[j]] = [pairs[j], pairs[i]];
@@ -194,17 +187,11 @@ const MemoryGame: React.FC = () => {
       setMoves(m => m + 1);
       const [a, b] = newSelected.map(id => newCards.find(c => c.instanceId === id)!);
       if (a.id === b.id) {
-        // match
         setTimeout(() => {
           setCards(prev => prev.map(c => c.id === a.id ? { ...c, matched: true } : c));
           setSelected([]);
-          const allMatched = newCards.filter(c => c.id === a.id || c.matched).every(c => c.matched || c.id === a.id);
-          if (allMatched && newCards.filter(c => !c.matched && c.id !== a.id).length === 0) {
-            setTimeout(() => setWon(true), 400);
-          }
         }, 500);
       } else {
-        // no match
         setTimeout(() => {
           setCards(prev => prev.map(c => newSelected.includes(c.instanceId) ? { ...c, flipped: false } : c));
           setSelected([]);
@@ -292,33 +279,17 @@ const PlanetPlay: React.FC = () => {
   return (
     <div className="min-h-screen px-4 py-8 flex flex-col items-center gap-8">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-        <h1
-          className="font-cinzel text-3xl md:text-5xl font-bold"
-          style={{ color: '#ffaa00', textShadow: '0 0 30px rgba(255,170,0,0.5)' }}
-        >
+        <h1 className="font-cinzel text-3xl md:text-5xl font-bold" style={{ color: '#ffaa00', textShadow: '0 0 30px rgba(255,170,0,0.5)' }}>
           🎮 PLAY
         </h1>
         <p className="font-cormorant text-lg text-gray-300 mt-2 italic">Games of love and memory</p>
       </motion.div>
 
-      {/* Game selector */}
       {!activeGame && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
           {[
-            {
-              id: 'quiz' as const,
-              emoji: '❓',
-              title: 'Relationship Quiz',
-              desc: 'How well do you remember our story?',
-              color: '#9b7bff',
-            },
-            {
-              id: 'memory' as const,
-              emoji: '🃏',
-              title: 'Memory Match',
-              desc: 'Find the matching pairs',
-              color: '#ffaa00',
-            },
+            { id: 'quiz' as const, emoji: '❓', title: 'Relationship Quiz', desc: 'How well do you remember our story?', color: '#9b7bff' },
+            { id: 'memory' as const, emoji: '🃏', title: 'Memory Match', desc: 'Find the matching pairs', color: '#ffaa00' },
           ].map(game => (
             <motion.div
               key={game.id}
@@ -341,13 +312,8 @@ const PlanetPlay: React.FC = () => {
         </div>
       )}
 
-      {/* Active game */}
       {activeGame && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-xl"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-xl">
           <div className="flex items-center gap-3 mb-6">
             <motion.button
               onClick={() => setActiveGame(null)}
