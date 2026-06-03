@@ -1,108 +1,134 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ECHO_MESSAGES } from '../../data/content';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { ANNIVERSARY_DATE, UNIVERSE_NAME, SENDER_NAME } from '../../data/content';
 
-const PlanetEcho: React.FC = () => {
-  const [revealed, setRevealed] = useState<Set<number>>(new Set());
+const getElapsed = (from: Date) => {
+  const now = new Date();
+  const diff = now.getTime() - from.getTime();
+  const totalSeconds = Math.floor(diff / 1000);
+  const seconds = totalSeconds % 60;
+  const minutes = Math.floor(totalSeconds / 60) % 60;
+  const hours = Math.floor(totalSeconds / 3600) % 24;
+  const days = Math.floor(totalSeconds / 86400);
+  return { days, hours, minutes, seconds };
+};
 
-  const toggle = (i: number) => {
-    setRevealed(prev => {
-      const next = new Set(prev);
-      if (next.has(i)) next.delete(i); else next.add(i);
-      return next;
-    });
-  };
+const PlanetEternity: React.FC = () => {
+  const [elapsed, setElapsed] = useState(getElapsed(ANNIVERSARY_DATE));
+
+  useEffect(() => {
+    const iv = setInterval(() => setElapsed(getElapsed(ANNIVERSARY_DATE)), 1000);
+    return () => clearInterval(iv);
+  }, []);
 
   return (
     <div className="min-h-screen px-4 py-8 flex flex-col items-center gap-8">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-        <h1 className="font-cinzel text-3xl md:text-5xl font-bold" style={{ color: '#7be3ff', textShadow: '0 0 30px rgba(123,227,255,0.5)' }}>
-          🎵 ECHO
+        <h1 className="font-cinzel text-3xl md:text-5xl font-bold" style={{ color: '#ffd6b0', textShadow: '0 0 30px rgba(255,214,176,0.5)' }}>
+          ♾️ ETERNITY
         </h1>
-        <p className="font-cormorant text-lg text-gray-300 mt-2 italic">Words that changed everything</p>
-        <p className="font-cinzel text-xs text-gray-600 mt-1">Tap a message to hear its weight</p>
+        <p className="font-cormorant text-lg text-gray-300 mt-2 italic">The place without an end</p>
       </motion.div>
 
-      <div className="w-full max-w-lg flex flex-col gap-5">
-        {ECHO_MESSAGES.map((msg, i) => (
-          <motion.div
-            key={msg.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            onClick={() => toggle(i)}
-            className="cursor-pointer"
-          >
-            <div className="flex items-center gap-2 mb-2 ml-2">
-              <div className="w-2 h-2 rounded-full" style={{ background: msg.color }} />
-              <span className="font-cinzel text-xs" style={{ color: msg.color, fontSize: 9, letterSpacing: '0.1em' }}>
-                {msg.speaker.toUpperCase()}
-              </span>
-            </div>
+      {/* Countup since Dec 19, 2022 */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2 }}
+        className="w-full max-w-md rounded-3xl p-8 text-center"
+        style={{
+          background: 'linear-gradient(135deg, rgba(255,214,176,0.08), rgba(255,214,176,0.04))',
+          border: '1px solid rgba(255,214,176,0.25)',
+          boxShadow: '0 0 40px rgba(255,214,176,0.06)',
+        }}
+      >
+        <p className="font-cinzel text-xs tracking-widest mb-2" style={{ color: '#ffd6b0', opacity: 0.7, letterSpacing: '0.2em' }}>
+          TOGETHER SINCE DEC 19, 2022
+        </p>
+        <p className="font-cormorant text-base italic text-gray-400 mb-6">
+          ...and every second since has mattered.
+        </p>
 
+        <div className="grid grid-cols-4 gap-3">
+          {[
+            { value: elapsed.days, label: 'DAYS' },
+            { value: elapsed.hours, label: 'HRS' },
+            { value: elapsed.minutes, label: 'MIN' },
+            { value: elapsed.seconds, label: 'SEC' },
+          ].map(({ value, label }) => (
             <motion.div
-              className="rounded-2xl p-5"
-              style={{
-                background: revealed.has(i) ? `${msg.color}18` : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${msg.color}${revealed.has(i) ? '55' : '22'}`,
-              }}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
+              key={label}
+              className="rounded-2xl p-3 flex flex-col items-center gap-1"
+              style={{ background: 'rgba(255,214,176,0.08)', border: '1px solid rgba(255,214,176,0.15)' }}
+              animate={{ scale: label === 'SEC' ? [1, 1.04, 1] : 1 }}
+              transition={{ duration: 1, repeat: Infinity }}
             >
-              <p
-                className="font-cormorant text-xl italic leading-relaxed"
-                style={{
-                  color: revealed.has(i) ? msg.color : '#666',
-                  filter: revealed.has(i) ? 'none' : 'blur(5px)',
-                  transition: 'all 0.4s ease',
-                  userSelect: 'none',
-                }}
-              >
-                {msg.text}
-              </p>
-
-              <AnimatePresence>
-                {revealed.has(i) && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="mt-3 border-t pt-3"
-                    style={{ borderColor: `${msg.color}22` }}
-                  >
-                    <p className="font-cinzel text-xs text-gray-500 mb-1" style={{ fontSize: 9, letterSpacing: '0.05em' }}>
-                      {msg.context}
-                    </p>
-                    <p className="font-cormorant text-sm text-gray-400 italic">{msg.weight}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {!revealed.has(i) && (
-                <p className="font-cinzel text-xs mt-2" style={{ color: msg.color, fontSize: 9, opacity: 0.6 }}>
-                  tap to reveal
-                </p>
-              )}
+              <span className="font-cinzel text-2xl font-bold" style={{ color: '#ffd6b0' }}>
+                {String(value).padStart(2, '0')}
+              </span>
+              <span className="font-cinzel text-gray-600" style={{ fontSize: 7, letterSpacing: '0.1em' }}>{label}</span>
             </motion.div>
+          ))}
+        </div>
+
+        <motion.p
+          className="font-cormorant text-sm italic text-gray-500 mt-6"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 3, repeat: Infinity }}
+        >
+          ♾️ Counting up. Never counting down.
+        </motion.p>
+      </motion.div>
+
+      {/* Quote section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="w-full max-w-md rounded-3xl p-6 text-center"
+        style={{ background: 'rgba(255,214,176,0.04)', border: '1px solid rgba(255,214,176,0.15)' }}
+      >
+        <p className="font-cormorant text-xl italic text-gray-200 leading-relaxed">
+          "Every day I've known you has been one I would choose again."
+        </p>
+        <p className="font-cinzel text-xs mt-3 text-gray-600" style={{ fontSize: 9 }}>
+          — {SENDER_NAME}, to {UNIVERSE_NAME}
+        </p>
+      </motion.div>
+
+      {/* Milestones */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className="w-full max-w-md"
+      >
+        <p className="font-cinzel text-xs text-center mb-4" style={{ color: '#ffd6b0', opacity: 0.7, letterSpacing: '0.15em' }}>
+          MILESTONES OF FOREVER
+        </p>
+        {[
+          { icon: '🌅', label: '100 Days Together', sub: 'We hit triple digits without even noticing' },
+          { icon: '🌙', label: '365 Days', sub: 'A full year of you. Of us. Of this.' },
+          { icon: '⭐', label: 'Every Morning After', sub: 'The day I first thought of you before anything else' },
+        ].map((m, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, x: -15 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.7 + i * 0.1 }}
+            className="flex items-center gap-4 mb-3 p-3 rounded-xl"
+            style={{ background: 'rgba(255,214,176,0.05)', border: '1px solid rgba(255,214,176,0.12)' }}
+          >
+            <span className="text-xl">{m.icon}</span>
+            <div>
+              <p className="font-cinzel text-xs font-bold" style={{ color: '#ffd6b0' }}>{m.label}</p>
+              <p className="font-cormorant text-xs italic text-gray-500">{m.sub}</p>
+            </div>
           </motion.div>
         ))}
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
-        className="text-center mt-4"
-      >
-        <p className="font-cormorant text-lg italic text-gray-400">
-          Some words carry entire universes inside them.
-        </p>
-        <p className="font-cormorant text-sm italic text-gray-600 mt-1">
-          Yours did.
-        </p>
       </motion.div>
     </div>
   );
 };
 
-export default PlanetEcho;
+export default PlanetEternity;
