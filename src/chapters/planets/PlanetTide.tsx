@@ -1,141 +1,226 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { UNIVERSE_NAME, SENDER_NAME } from '../../data/content';
-
-const TIDE_MESSAGES = [
-  { from: SENDER_NAME, text: 'Some days the distance feels like trying to hold water.', delay: 0 },
-  { from: UNIVERSE_NAME, text: 'And some days it feels like the distance doesn\'t exist at all.', delay: 0.4 },
-  { from: SENDER_NAME, text: 'Those days are everything.', delay: 0.8 },
-  { from: UNIVERSE_NAME, text: 'Tell me you\'ll remember them.', delay: 1.2 },
-  { from: SENDER_NAME, text: 'I remember every single one.', delay: 1.6 },
-  { from: UNIVERSE_NAME, text: 'Good. So do I.', delay: 2.0 },
-];
+import { motion, AnimatePresence } from 'framer-motion';
+import { TANGLISH_CHAT, UNIVERSE_NAME } from '../../data/content';
 
 const PlanetTide: React.FC = () => {
   const [visibleCount, setVisibleCount] = useState(0);
-  const [heartbeatSize, setHeartbeatSize] = useState(1);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animRef = useRef<number>(0);
-  const timeRef = useRef(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [finished, setFinished] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Wave animation
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    canvas.width = canvas.offsetWidth;
-    canvas.height = 120;
+    if (!isPlaying || visibleCount >= TANGLISH_CHAT.length) return;
 
-    const draw = () => {
-      timeRef.current += 0.025;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const waves = [
-        { color: 'rgba(116,199,247,0.35)', amp: 22, freq: 1.8, speed: 1, offset: 0 },
-        { color: 'rgba(155,123,255,0.25)', amp: 16, freq: 2.5, speed: 1.3, offset: 1 },
-        { color: 'rgba(116,199,247,0.2)', amp: 28, freq: 1.2, speed: 0.7, offset: 2 },
-      ];
-
-      waves.forEach(wave => {
-        ctx.beginPath();
-        ctx.fillStyle = wave.color;
-        ctx.moveTo(0, canvas.height);
-        for (let x = 0; x <= canvas.width; x += 3) {
-          const y = canvas.height / 2 +
-            Math.sin((x / canvas.width) * Math.PI * 2 * wave.freq + timeRef.current * wave.speed + wave.offset) * wave.amp;
-          ctx.lineTo(x, y);
-        }
-        ctx.lineTo(canvas.width, canvas.height);
-        ctx.closePath();
-        ctx.fill();
+    const delay = visibleCount === 0 ? 500 : 800 + Math.random() * 600;
+    timerRef.current = setTimeout(() => {
+      setVisibleCount(prev => {
+        const next = prev + 1;
+        if (next >= TANGLISH_CHAT.length) setFinished(true);
+        return next;
       });
+    }, delay);
 
-      animRef.current = requestAnimationFrame(draw);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
-    animRef.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(animRef.current);
-  }, []);
+  }, [isPlaying, visibleCount]);
 
-  // Reveal messages progressively
   useEffect(() => {
-    const t = setTimeout(() => {
-      if (visibleCount < TIDE_MESSAGES.length) {
-        setVisibleCount(v => v + 1);
-      }
-    }, visibleCount === 0 ? 500 : 1200);
-    return () => clearTimeout(t);
+    scrollToBottom();
   }, [visibleCount]);
 
-  // Heartbeat
-  useEffect(() => {
-    const iv = setInterval(() => {
-      setHeartbeatSize(1.25);
-      setTimeout(() => setHeartbeatSize(1), 200);
-    }, 1400);
-    return () => clearInterval(iv);
-  }, []);
+  const restart = () => {
+    setVisibleCount(0);
+    setFinished(false);
+    setIsPlaying(true);
+  };
 
   return (
-    <div className="min-h-screen px-4 py-8 flex flex-col items-center gap-8">
+    <div className="min-h-screen px-4 py-8 flex flex-col items-center gap-6">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
         <h1 className="font-cinzel text-3xl md:text-5xl font-bold" style={{ color: '#74c7f7', textShadow: '0 0 30px rgba(116,199,247,0.5)' }}>
           🌊 TIDE
         </h1>
         <p className="font-cormorant text-lg text-gray-300 mt-2 italic">The pull between two hearts</p>
+        <p className="font-cinzel text-xs text-gray-600 mt-1">A night we talked till the world went quiet</p>
       </motion.div>
 
-      {/* Wave visual */}
+      {/* Chat container */}
+      <div className="w-full max-w-sm">
+        <div
+          className="rounded-3xl overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, rgba(116,199,247,0.05), rgba(5,8,22,0.9))',
+            border: '1px solid rgba(116,199,247,0.2)',
+            minHeight: '60vh',
+            maxHeight: '65vh',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {/* Chat header */}
+          <div
+            className="px-4 py-3 flex items-center gap-3"
+            style={{ borderBottom: '1px solid rgba(116,199,247,0.15)', background: 'rgba(5,8,22,0.6)' }}
+          >
+            <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(116,199,247,0.2)' }}>
+              <span className="text-sm">🌊</span>
+            </div>
+            <div>
+              <p className="font-cinzel text-xs font-bold" style={{ color: '#74c7f7' }}>{UNIVERSE_NAME}</p>
+              <div className="flex items-center gap-1">
+                <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#4ade80' }} />
+                <p className="font-cinzel text-xs text-gray-500" style={{ fontSize: 8 }}>online</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto px-3 py-4 flex flex-col gap-2" style={{ minHeight: 0 }}>
+            {!isPlaying && visibleCount === 0 && (
+              <div className="flex-1 flex items-center justify-center">
+                <p className="font-cormorant text-sm text-gray-600 italic text-center">
+                  A night where everything became clear...
+                </p>
+              </div>
+            )}
+
+            {TANGLISH_CHAT.slice(0, visibleCount).map((msg, i) => {
+              const isMe = msg.from === 'him';
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div style={{ maxWidth: '78%' }}>
+                    <div
+                      className="px-3.5 py-2 rounded-2xl font-cormorant text-sm"
+                      style={{
+                        background: isMe
+                          ? 'linear-gradient(135deg, rgba(116,199,247,0.25), rgba(116,199,247,0.15))'
+                          : 'rgba(255,255,255,0.06)',
+                        border: isMe
+                          ? '1px solid rgba(116,199,247,0.35)'
+                          : '1px solid rgba(255,255,255,0.1)',
+                        color: isMe ? '#cce9fb' : '#ddd',
+                        borderBottomRightRadius: isMe ? 4 : undefined,
+                        borderBottomLeftRadius: !isMe ? 4 : undefined,
+                      }}
+                    >
+                      {msg.text}
+                    </div>
+                    <p
+                      className="font-cinzel mt-0.5 px-1"
+                      style={{
+                        fontSize: 8,
+                        color: '#444',
+                        textAlign: isMe ? 'right' : 'left',
+                        letterSpacing: '0.05em',
+                      }}
+                    >
+                      {msg.time}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+
+            {/* Typing indicator */}
+            {isPlaying && !finished && visibleCount > 0 && visibleCount < TANGLISH_CHAT.length && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex justify-start"
+              >
+                <div
+                  className="px-3 py-2 rounded-2xl flex items-center gap-1"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                >
+                  {[0, 1, 2].map(i => (
+                    <motion.div
+                      key={i}
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ background: '#74c7f7' }}
+                      animate={{ opacity: [0.3, 1, 0.3], y: [0, -3, 0] }}
+                      transition={{ duration: 0.8, delay: i * 0.2, repeat: Infinity }}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Finished message */}
+          <AnimatePresence>
+            {finished && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="px-4 py-3 text-center"
+                style={{ borderTop: '1px solid rgba(116,199,247,0.15)' }}
+              >
+                <p className="font-cormorant text-sm italic text-gray-400">
+                  That night... everything felt right. 💛
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Controls */}
+        <div className="flex justify-center gap-3 mt-4">
+          {!isPlaying && !finished && (
+            <motion.button
+              onClick={() => setIsPlaying(true)}
+              className="px-6 py-2.5 rounded-full font-cinzel text-xs tracking-wider"
+              style={{
+                background: 'linear-gradient(135deg, rgba(116,199,247,0.2), rgba(116,199,247,0.1))',
+                border: '1px solid rgba(116,199,247,0.45)',
+                color: '#74c7f7',
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              ▶ Play this memory
+            </motion.button>
+          )}
+
+          {finished && (
+            <motion.button
+              onClick={restart}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="px-5 py-2 rounded-full font-cinzel text-xs"
+              style={{
+                border: '1px solid rgba(116,199,247,0.3)',
+                color: '#74c7f7',
+              }}
+              whileHover={{ scale: 1.05 }}
+            >
+              ↺ Replay
+            </motion.button>
+          )}
+        </div>
+      </div>
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="w-full max-w-lg rounded-2xl overflow-hidden"
-        style={{ border: '1px solid rgba(116,199,247,0.2)', height: 120 }}
+        transition={{ delay: 0.6 }}
+        className="text-center max-w-sm"
       >
-        <canvas ref={canvasRef} className="w-full" />
-      </motion.div>
-
-      {/* Chat messages */}
-      <div className="w-full max-w-sm flex flex-col gap-3">
-        {TIDE_MESSAGES.slice(0, visibleCount).map((msg, i) => {
-          const isMe = msg.from === SENDER_NAME;
-          return (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: isMe ? -20 : 20, y: 10 }}
-              animate={{ opacity: 1, x: 0, y: 0 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 22 }}
-              className={`flex ${isMe ? 'justify-start' : 'justify-end'}`}
-            >
-              <div
-                className="max-w-xs px-4 py-3 rounded-2xl"
-                style={{
-                  background: isMe ? 'rgba(116,199,247,0.15)' : 'rgba(155,123,255,0.15)',
-                  border: `1px solid ${isMe ? 'rgba(116,199,247,0.3)' : 'rgba(155,123,255,0.3)'}`,
-                  borderRadius: isMe ? '4px 18px 18px 18px' : '18px 4px 18px 18px',
-                }}
-              >
-                <p className="font-cinzel text-xs mb-1 opacity-60" style={{ color: isMe ? '#74c7f7' : '#9b7bff', fontSize: 8, letterSpacing: '0.08em' }}>
-                  {msg.from.toUpperCase()}
-                </p>
-                <p className="font-cormorant text-sm text-gray-200 italic leading-relaxed">{msg.text}</p>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {/* Heartbeat */}
-      <motion.div className="text-center mt-4">
-        <motion.div
-          className="text-4xl inline-block"
-          animate={{ scale: heartbeatSize }}
-          transition={{ duration: 0.15, ease: 'easeInOut' }}
-        >
-          🌊
-        </motion.div>
-        <p className="font-cormorant text-lg italic text-gray-400 mt-2">
-          The tide always finds its way back.
+        <p className="font-cormorant text-base italic text-gray-500 leading-relaxed">
+          Tanglish — because some feelings only make sense in the language closest to the heart.
         </p>
       </motion.div>
     </div>
