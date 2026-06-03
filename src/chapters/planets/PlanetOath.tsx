@@ -24,7 +24,6 @@ const PlanetOath: React.FC = () => {
         <p className="font-cinzel text-xs text-gray-600 mt-1">Seal each promise in order</p>
       </motion.div>
 
-      {/* Progress */}
       <div className="flex gap-2">
         {PROMISES.map((_, i) => (
           <div
@@ -39,7 +38,6 @@ const PlanetOath: React.FC = () => {
         ))}
       </div>
 
-      {/* Promises */}
       <div className="w-full max-w-lg flex flex-col gap-4">
         {PROMISES.map((promise, i) => {
           const sealed = i < sealedCount;
@@ -82,7 +80,6 @@ const PlanetOath: React.FC = () => {
                 </div>
               </div>
 
-              {/* Sealed glow effect */}
               {sealed && (
                 <motion.div
                   className="absolute inset-0 pointer-events-none"
@@ -97,7 +94,6 @@ const PlanetOath: React.FC = () => {
         })}
       </div>
 
-      {/* Final state */}
       <AnimatePresence>
         {allSealed && (
           <motion.div
