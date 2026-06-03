@@ -6,10 +6,9 @@ const PlanetFrequency: React.FC = () => {
   const [activeSignal, setActiveSignal] = useState<number | null>(null);
   const [scanningLine, setScanningLine] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animRef = useRef<number>(0);
+  const animRef = useRef(0);
   const timeRef = useRef(0);
 
-  // Waveform canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -22,7 +21,6 @@ const PlanetFrequency: React.FC = () => {
       timeRef.current += 0.04;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw 3 waveforms
       const waves = [
         { color: '#9b7bff', amp: 20, freq: 2, phase: 0 },
         { color: '#ff7ab6', amp: 14, freq: 3.5, phase: 1 },
@@ -43,7 +41,6 @@ const PlanetFrequency: React.FC = () => {
         ctx.stroke();
       });
 
-      // Center line
       ctx.beginPath();
       ctx.strokeStyle = 'rgba(255,255,255,0.08)';
       ctx.lineWidth = 1;
@@ -57,7 +54,6 @@ const PlanetFrequency: React.FC = () => {
     return () => cancelAnimationFrame(animRef.current);
   }, []);
 
-  // Scanning line
   useEffect(() => {
     const iv = setInterval(() => {
       setScanningLine(prev => (prev + 1) % 100);
@@ -78,34 +74,26 @@ const PlanetFrequency: React.FC = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="w-full max-w-lg relative rounded-2xl overflow-hidden"
-        style={{ border: '1px solid rgba(155,123,255,0.3)', height: 120 }}
+        className="w-full max-w-2xl rounded-2xl overflow-hidden relative"
+        style={{ height: 80, background: 'rgba(155,123,255,0.04)', border: '1px solid rgba(155,123,255,0.2)' }}
       >
-        <canvas ref={canvasRef} className="w-full h-full" style={{ display: 'block' }} />
-
-        {/* Scanning line overlay */}
-        <div
-          className="absolute top-0 bottom-0 w-px pointer-events-none"
-          style={{
-            left: `${scanningLine}%`,
-            background: 'linear-gradient(to bottom, transparent, rgba(155,123,255,0.6), transparent)',
-          }}
+        <canvas ref={canvasRef} className="w-full h-full" />
+        <motion.div
+          className="absolute top-0 bottom-0 w-px"
+          style={{ background: 'rgba(155,123,255,0.6)', left: `${scanningLine}%` }}
         />
-
         <div className="absolute top-2 left-3">
-          <span className="font-cinzel text-xs" style={{ color: '#9b7bff', fontSize: 9, letterSpacing: '0.1em' }}>
-            ◉ LIVE SIGNAL
-          </span>
+          <p className="font-cinzel text-xs" style={{ color: '#9b7bff', fontSize: 8, letterSpacing: '0.1em' }}>◉ LIVE SIGNAL</p>
         </div>
       </motion.div>
 
       {/* Frequency cards */}
-      <div className="w-full max-w-lg grid grid-cols-1 gap-4">
+      <div className="w-full max-w-2xl flex flex-col gap-3">
         {FREQUENCY_SIGNALS.map((signal, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
             onClick={() => setActiveSignal(activeSignal === i ? null : i)}
             className="cursor-pointer rounded-2xl p-4 relative overflow-hidden"
@@ -117,50 +105,43 @@ const PlanetFrequency: React.FC = () => {
             whileTap={{ scale: 0.99 }}
           >
             <div className="flex items-center justify-between">
-              <div>
-                <div className="flex items-baseline gap-2">
-                  <span className="font-cinzel text-2xl font-bold" style={{ color: '#9b7bff' }}>{signal.freq}</span>
-                  <span className="font-cinzel text-xs" style={{ color: '#9b7bff', opacity: 0.7 }}>{signal.label}</span>
-                </div>
+              <div className="flex items-center gap-3">
+                <p className="font-cinzel text-xs font-bold" style={{ color: '#9b7bff', letterSpacing: '0.08em' }}>{signal.freq}</p>
+                <p className="font-cormorant text-sm text-gray-300 italic">{signal.label}</p>
               </div>
-              <motion.div
-                animate={{ rotate: activeSignal === i ? 90 : 0 }}
-                className="text-gray-500"
-              >
-                ›
-              </motion.div>
+              <span className="text-gray-600">{activeSignal === i ? '▲' : '›'}</span>
             </div>
 
             <AnimatePresence>
               {activeSignal === i && (
-                <motion.p
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="font-cormorant text-sm text-gray-300 italic leading-relaxed mt-3"
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
                 >
-                  {signal.meaning}
-                </motion.p>
+                  <p className="font-cormorant text-base text-gray-200 italic leading-relaxed mt-3 pt-3"
+                    style={{ borderTop: '1px solid rgba(155,123,255,0.15)' }}>
+                    {signal.meaning}
+                  </p>
+                </motion.div>
               )}
             </AnimatePresence>
           </motion.div>
         ))}
       </div>
 
-      {/* Final signal */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="w-full max-w-lg glass rounded-3xl p-6 text-center"
-        style={{ border: '1px solid rgba(155,123,255,0.3)' }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+        className="text-center"
+        style={{ border: '1px solid rgba(155,123,255,0.2)', borderRadius: 16, padding: '16px 24px', background: 'rgba(155,123,255,0.05)' }}
       >
-        <p className="font-cinzel text-xs tracking-widest text-gray-500 mb-3">STRONGEST SIGNAL DETECTED</p>
-        <p className="font-cormorant text-2xl italic" style={{ color: '#9b7bff' }}>
-          The sound of your name<br />
-          in a quiet room.
+        <p className="font-cinzel text-xs tracking-widest mb-2" style={{ color: '#9b7bff', fontSize: 9 }}>STRONGEST SIGNAL DETECTED</p>
+        <p className="font-cormorant text-lg italic text-gray-200">
+          The sound of your name<br />in a quiet room.
         </p>
-        <p className="font-cinzel text-xs mt-3 text-gray-500">— Tuned in to {UNIVERSE_NAME}, always</p>
+        <p className="font-cinzel text-xs mt-2 text-gray-500" style={{ fontSize: 9 }}>— Tuned in to {UNIVERSE_NAME}, always</p>
       </motion.div>
     </div>
   );
